@@ -1,9 +1,9 @@
 <#import "spring.ftl" as spring />
 <div id="body" class="fullscreen full_height">
 	<div id="side_bar">
-		<#include "inc/api-sidebar-list.ftl">
+		<#include "inc/sidebar-list.ftl">
 		<div class="side_menu">
-			<h2>Example input</h2>
+			<h2><@spring.message "pages.examples.heading"/></h2>
 			<ul>
 				<li>45° 32' 25&quot; N, 129° 40' 31&quot; W</li>
 				<li>&nbsp;</li>
@@ -13,13 +13,13 @@
 		</div>
 	</div>
 	<div id="content" class="clear_fix">
-		<h1><@spring.message "api.coordinates.heading"/></h1>
-		<form class="narwhal-form" method="post" action="coordinates.html">
-			<p><@spring.message "api.coordinates.description"/></p>
+		<h1><@spring.message "coordinates.heading"/></h1>
+		<form class="narwhal-form" method="post">
+			<p><@spring.message "coordinates.description"/></p>
 			<div class="round custom-form">
 				<textarea name="data" rows="15" class="round" placeholder="45° 32' 25&quot; N, -129° 40' 31&quot; W"></textarea>
-				<input type="submit" value="Submit" class="round" />
+				<input type="submit" value="<@spring.message "coordinates.form.submit"/>" class="round" />
 			</div>
 		</form>
 	</div>
-</div>	
+</div>

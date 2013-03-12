@@ -1,9 +1,9 @@
 <div id="body" class="fullscreen full_height">
 	<div id="side_bar">
-		<#include "inc/api-sidebar-list.ftl">
+		<#include "inc/sidebar-list.ftl">
 	</div>
 	<div id="content" class="clear_fix">
-		<h1>Coordinate conversion results</h1>		
+		<h1><@spring.message "coordinates.results.heading"/></h1>
 		<table class="narwhal-results">
 			<thead>
 				<tr>

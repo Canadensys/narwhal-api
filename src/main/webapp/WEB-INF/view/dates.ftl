@@ -1,8 +1,8 @@
 <div id="body" class="fullscreen full_height">
 	<div id="side_bar">
-		<#include "inc/api-sidebar-list.ftl">
+		<#include "inc/sidebar-list.ftl">
 		<div class="side_menu">
-			<h2>Example input</h2>
+			<h2><@spring.message "pages.examples.heading"/></h2>
 			<ul>
 				<li>Jun 13, 2008</li>
 				<li>15 Jan 2011</li>
@@ -15,12 +15,12 @@
 		</div>
 	</div>
 	<div id="content" class="clear_fix">
-		<h1>Date parsing</h1>
-		<form class="narwhal-form" method="post" action="dates_results.html">
-			<p>Use this tool to parse dates into their component parts. Type or paste dates on separate lines, optionally preceded by your own identifier followed by a tab or a pipe</p>
+		<h1><@spring.message "dates.heading"/></h1>
+		<form class="narwhal-form" method="post">
+			<p><@spring.message "dates.description"/></p>
 			<div class="round custom-form">
 				<textarea name="data" rows="15" class="round" placeholder="Jun 13, 2008"></textarea>
-				<input type="submit" value="Submit" class="round" />
+				<input type="submit" value="<@spring.message "pages.form.submit"/>" class="round" />
 			</div>
 		</form>
 	</div>
