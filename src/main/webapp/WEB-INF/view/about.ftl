@@ -5,9 +5,9 @@
 	</div>
 	<div id="content" class="clear_fix">
 		<h1><@spring.message "about.heading"/></h1>
-		<p><@spring.message "about.description"/></p>
+		<p>${rc.getMessage("about.description", ["http://data.canadensys.net"])}</p>
 
 		<h2><@spring.message "about.code.heading"/></h2>
-		<p><@spring.message "about.code.description"/></p>
+		<p>${rc.getMessage("about.code.description", ["https://github.com/Canadensys/narwhal-processor"])}</p></p>
 	</div>
 </div>

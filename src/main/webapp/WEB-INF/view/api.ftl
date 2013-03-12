@@ -13,12 +13,12 @@
 		
 		<a name="introduction"></a>
 		<h2><@spring.message "api.menu.introduction"/></h2>
-		<p><@spring.message "api.description"/></p>
+		<p>${rc.getMessage("api.description", ["http://en.wikipedia.org/wiki/JSONP"])}</p>
 		
 		<a name="coordinates"></a>
 		<h2><@spring.message "api.menu.coordinates"/></h2>
 		<p class="api-path round">http://data.canadensys.net/tools/coordinates.json<span class="separator"><@spring.message "api.uri.separator"/></span>http://data.canadensys.net/tools/coordinates.xml</p>
-		<p><@spring.message "api.coordinates.description"/></p>
+		<p>${rc.getMessage("api.coordinates.description", ["http://www.geojson.org/", "http://en.wikipedia.org/wiki/Geography_Markup_Language"])}</p>
 		<p><em><@spring.message "pages.abbrev.example"/></em> http://data.canadensys.net/tools/coordinates.json?<strong>data</strong>=35|45° 32' 25"N,-129° 40' 31W"&amp;<strong>callback</strong>=MyCallback</p>
 		<p><span><@spring.message "api.output.heading"/></span><pre></pre></p>
 		
