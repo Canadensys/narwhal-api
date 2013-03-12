@@ -3,7 +3,7 @@
 		<#include "inc/sidebar-list.ftl">
 	</div>
 	<div id="content" class="clear_fix">
-		<h1><@@spring.message "dates.results.heading"/></h1>
+		<h1><@spring.message "dates.results.heading"/></h1>
 		<table class="narwhal-results">
 			<thead>
 				<tr>
