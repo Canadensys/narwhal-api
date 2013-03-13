@@ -1,4 +1,4 @@
-<#assign page={"title":${rc.getMessage("tools.coordinates.heading")},"cssList":["styles/tools.css"]}>
+<#assign page={"title":rc.getMessage("tools.coordinates.heading"),"cssList":["styles/tools.css"]}>
 <#include "inc/header.ftl">
 <#include "inc/canadensys-header.ftl">
 <div id="body" class="fullscreen full_height">

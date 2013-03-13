@@ -46,4 +46,21 @@ dependencies {
 war {
 	webInf { from "../canadensys-view-includes/WEB-INF" }
 }
+
+
+task concatProperties << {
+	ant.concat(
+		append : "yes",
+		destfile:"${sourceSets.main.output.resourcesDir}/messages_en.properties") {
+			fileset(dir:'../canadensys-view-includes/resources/',includes:'messages_en.properties')
+	}
+	
+	ant.concat(
+		append : "yes",
+		destfile:"${sourceSets.main.output.resourcesDir}/messages_fr.properties") {
+			fileset(dir:'../canadensys-view-includes/resources/',includes:'messages_fr.properties')
+	}
+}
+//Do concatProperties before WAR
+war.dependsOn concatProperties
 	
