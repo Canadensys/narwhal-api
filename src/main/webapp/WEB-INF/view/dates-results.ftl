@@ -1,4 +1,4 @@
-<#assign page={"title":${rc.getMessage("tools.dates.results.heading")},"cssList":["styles/tools.css"]}>
+<#assign page={"title":rc.getMessage("tools.dates.results.heading"),"cssList":["styles/tools.css"]}>
 <#include "inc/header.ftl">
 <#include "inc/canadensys-header.ftl">
 <div id="body" class="fullscreen full_height">
@@ -10,7 +10,7 @@
 		<table class="narwhal-results">
 			<thead>
 				<tr>
-					<#if root.idProvided><td class="identifier">id</td></#if><td class="original">${rc.getMessage("tools.common.original")}</td><td>year</td><td>month</td><td>day</td><td>isoDate</td>
+					<#if root.idProvided><td class="identifier">id</td></#if><td class="original">${rc.getMessage("tools.common.original")}</td><td>${rc.getMessage("tools.common.year")}</td><td>${rc.getMessage("tools.common.month")}</td><td>${rc.getMessage("tools.common.day")}</td><td>${rc.getMessage("tools.common.iso")}</td>
 				</tr>
 			</thead>
 			<tbody>
