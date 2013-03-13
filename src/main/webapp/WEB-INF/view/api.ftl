@@ -1,31 +1,34 @@
-<#import "spring.ftl" as spring />
+<#assign page={"title":${rc.getMessage("tools.api.heading")},"cssList":["styles/tools.css"]}>
+<#include "inc/header.ftl">
+<#include "inc/canadensys-header.ftl">
 <div id="body" class="fullscreen full_height">
 	<div id="side_bar">
 		<#include "inc/sidebar-list.ftl">
 	</div>
 	<div id="content" class="clear_fix">
-		<h1><@spring.message "api.heading"/></h1>
+		<h1>${rc.getMessage("tools.api.heading")}</h1>
 		<ul class="index">
-			<li><a href="#introduction"><@spring.message "api.menu.introduction"/></a></li>
-			<li><a href="#coordinates"><@spring.message "api.menu.coordinates"/></a></li>
-			<li><a href="#dates"><@spring.message "api.menu.dates"/></a></li>
+			<li><a href="#introduction">${rc.getMessage("tools.api.menu.introduction")}</a></li>
+			<li><a href="#coordinates">${rc.getMessage("tools.api.menu.coordinates")}</a></li>
+			<li><a href="#dates">${rc.getMessage("tools.api.menu.dates")}</a></li>
 		</ul>
 		
 		<a name="introduction"></a>
-		<h2><@spring.message "api.menu.introduction"/></h2>
-		<p>${rc.getMessage("api.description", ["http://en.wikipedia.org/wiki/JSONP"])}</p>
+		<h2>${rc.getMessage("tools.api.menu.introduction")}</h2>
+		<p>${rc.getMessage("tools.api.description", ["http://en.wikipedia.org/wiki/JSONP"])}</p>
 		
 		<a name="coordinates"></a>
-		<h2><@spring.message "api.menu.coordinates"/></h2>
-		<p class="api-path round">http://data.canadensys.net/tools/coordinates.json<span class="separator"><@spring.message "api.uri.separator"/></span>http://data.canadensys.net/tools/coordinates.xml</p>
-		<p>${rc.getMessage("api.coordinates.description", ["http://www.geojson.org/", "http://en.wikipedia.org/wiki/Geography_Markup_Language"])}</p>
-		<p><em><@spring.message "pages.abbrev.example"/></em> http://data.canadensys.net/tools/coordinates.json?<strong>data</strong>=35|45° 32' 25"N,-129° 40' 31W"&amp;<strong>callback</strong>=MyCallback</p>
-		<p><span><@spring.message "api.output.heading"/></span><pre></pre></p>
+		<h2>${rc.getMessage("tools.api.menu.coordinates")}</h2>
+		<p class="api-path round">http://data.canadensys.net/tools/coordinates.json<span class="separator">${rc.getMessage("tools.api.uri.separator")}</span>http://data.canadensys.net/tools/coordinates.xml</p>
+		<p>${rc.getMessage("tools.api.coordinates.description", ["http://www.geojson.org/", "http://en.wikipedia.org/wiki/Geography_Markup_Language"])}</p>
+		<p><em>${rc.getMessage("tools.common.abbrev.example")}</em> http://data.canadensys.net/tools/coordinates.json?<strong>data</strong>=35|45° 32' 25"N,-129° 40' 31W"&amp;<strong>callback</strong>=MyCallback</p>
+		<p><span>${rc.getMessage("tools.api.output.heading")}</span><pre></pre></p>
 		
 		<a name="dates"></a>
-		<h2><@spring.message "api.menu.dates"/></h2>
-		<p class="api-path round">http://data.canadensys.net/tools/dates.json<span class="separator"><@spring.message "api.uri.separator"/></span>http://data.canadensys.net/tools/dates.xml</p>
-		<p><em><@spring.message "pages.abbrev.example"/></em> http://data.canadensys.net/tools/dates.json?<strong>data</strong>=Jun 13, 2008&amp;<strong>callback</strong>=MyCallback</p>
-		<p><span><@spring.message "api.output.heading"/></span><pre></pre></p>
+		<h2>${rc.getMessage("tools.api.menu.dates")}</h2>
+		<p class="api-path round">http://data.canadensys.net/tools/dates.json<span class="separator">${rc.getMessage("tools.api.uri.separator")}</span>http://data.canadensys.net/tools/dates.xml</p>
+		<p><em>${rc.getMessage("tools.common.abbrev.example")}</em> http://data.canadensys.net/tools/dates.json?<strong>data</strong>=Jun 13, 2008&amp;<strong>callback</strong>=MyCallback</p>
+		<p><span>${rc.getMessage("tools.api.output.heading")}</span><pre></pre></p>
 	</div>
 </div>
+<#include "inc/footer.ftl">

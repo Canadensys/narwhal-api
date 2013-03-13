@@ -1,16 +1,16 @@
-<#import "spring.ftl" as spring />
-<#assign page={"title":"Coordinates results","cssList":["styles/tools.css"]}>
+<#assign page={"title":${rc.getMessage("tools.coordinates.results.heading")},"cssList":["styles/tools.css"]}>
 <#include "inc/header.ftl">
+<#include "inc/canadensys-header.ftl">
 <div id="body" class="fullscreen full_height">
 	<div id="side_bar">
 		<#include "inc/sidebar-list.ftl">
 	</div>
 	<div id="content" class="clear_fix">
-		<h1><@spring.message "coordinates.results.heading"/></h1>
+		<h1>${rc.getMessage("tools.coordinates.results.heading")}</h1>
 		<table class="narwhal-results">
 			<thead>
 				<tr>
-					<#if root.idProvided><td class="identifier">id</td></#if><td class="original">original</td><td>decimalLatitude</td><td>decimalLongitude</td>
+					<#if root.idProvided><td class="identifier">id</td></#if><td class="original">${rc.getMessage("tools.common.original")}</td><td>decimalLatitude</td><td>decimalLongitude</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -25,3 +25,4 @@
 		</table>
 	</div>
 </div>
+<#include "inc/footer.ftl">
