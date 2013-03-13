@@ -1,3 +1,6 @@
+<#import "spring.ftl" as spring />
+<#assign page={"title":"Coordinates results","cssList":["styles/tools.css"]}>
+<#include "inc/header.ftl">
 <div id="body" class="fullscreen full_height">
 	<div id="side_bar">
 		<#include "inc/sidebar-list.ftl">
