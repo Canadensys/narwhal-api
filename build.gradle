@@ -1,0 +1,49 @@
+apply plugin: 'java'
+apply plugin: 'war'
+
+repositories {
+	maven {url 'http://repo.opengeo.org'}
+	maven {url 'http://download.java.net/maven/2'}
+	maven {url 'http://repo.opengeo.org'}
+
+    mavenCentral()
+    mavenLocal()
+}
+
+ext {
+    springVersion = "3.2.1.RELEASE"
+    jacksonVersion = "2.1.4"
+	geotoolsVersion = "10-SNAPSHOT"
+}
+
+dependencies {
+	providedCompile group: 'javax.servlet', name: 'servlet-api', version: '2.5'
+	
+	compile group: 'org.geotools', name: 'gt-geojson', version: geotoolsVersion
+	compile group: 'org.geotools', name: 'gt-xml', version: geotoolsVersion
+	compile group: 'net.canadensys', name: 'narwhal-processor', version: '1.0-SNAPSHOT'
+	compile group: 'org.springframework', name: 'spring-webmvc', version: springVersion
+	compile group: 'org.springframework', name: 'spring-web', version: springVersion
+	compile group: 'org.springframework', name: 'spring-oxm', version: springVersion
+	compile group: 'org.springframework', name: 'spring-context-support', version: springVersion
+	
+	compile group: 'org.hibernate', name: 'hibernate-validator', version: '4.3.1.Final'
+	
+	compile group: 'log4j', name: 'log4j', version: '1.2.17'
+	
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonVersion
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonVersion
+	
+	compile group: 'org.freemarker', name: 'freemarker', version: '2.3.19'
+	
+	testCompile group: 'junit', name: 'junit', version: '4.8.2'
+    testCompile group: 'org.springframework', name: 'spring-test', version: springVersion
+    testCompile group: 'com.jayway.jsonpath', name: 'json-path', version: '0.8.1'
+}
+
+//WAR plugin settings
+war {
+	webInf { from "../canadensys-view-includes/WEB-INF" }
+}
+	
