@@ -14,7 +14,11 @@ ext {
     springVersion = "3.2.1.RELEASE"
     jacksonVersion = "2.1.4"
 	geotoolsVersion = "10-SNAPSHOT"
+	sourceEncoding = "UTF-8"
 }
+
+compileJava.options.encoding = sourceEncoding
+compileTestJava.options.encoding = sourceEncoding
 
 dependencies {
 	providedCompile group: 'javax.servlet', name: 'servlet-api', version: '2.5'

@@ -23,7 +23,7 @@
 			<p>${rc.getMessage("tools.dates.description")}</p>
 			<div class="round custom-form">
 				<textarea name="data" rows="15" class="round" placeholder="Jun 13, 2008"></textarea>
-				<input type="submit" value="${rc.getMessage("tools.common.form.submit")}" />" class="round" />
+				<input type="submit" value="${rc.getMessage("tools.common.form.submit")}" class="round" />
 			</div>
 		</form>
 	</div>

@@ -15,9 +15,9 @@
 			</thead>
 			<tbody>
 			<#assign row_odd=true>
-			<#list root.results as currDate>
+			<#list root.results.processedDateList as currDate>
 				<tr class=<#if row_odd>"odd"<#else>"even"</#if>>
-					<#if root.idProvided><td>${currDate.id}</td></#if><td class="original">${currDate.originalValue}</td><td>${currDate.year?if_exists}</td><td>${currDate.month?if_exists}</td><td>${currDate.day?if_exists}</td><td>${currDate.isoDate?if_exists}</td>
+					<#if root.idProvided><td>${currDate.id}</td></#if><td class="original">${currDate.originalValue}</td><td>${(currDate.year?c)!}</td><td>${currDate.month!}</td><td>${currDate.day!}</td><td>${currDate.isoDate!}</td>
 				</tr>
 				<#assign row_odd=!row_odd>
 			</#list>

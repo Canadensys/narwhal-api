@@ -10,7 +10,7 @@
 		<table class="narwhal-results">
 			<thead>
 				<tr>
-					<#if root.idProvided><td class="identifier">id</td></#if><td class="original">${rc.getMessage("tools.common.original")}</td><td>decimalLatitude</td><td>decimalLongitude</td>
+					<#if (root.idProvided)??><td class="identifier">id</td></#if><td class="original">${rc.getMessage("tools.common.original")}</td><td>decimalLatitude</td><td>decimalLongitude</td>
 				</tr>
 			</thead>
 			<tbody>
