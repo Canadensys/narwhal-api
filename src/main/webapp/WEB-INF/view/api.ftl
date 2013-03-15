@@ -1,5 +1,6 @@
 <#assign page={"title":rc.getMessage("tools.api.heading"),"cssList":["styles/tools.css"]}>
 <#include "inc/header.ftl">
+<div id="feedback_bar"><a href="https://github.com/Canadensys/narwhal-api/issues/new" target="_blank" title="${ltext("tools.common.feedback.hover")}">&nbsp;</a></div>
 <#include "inc/canadensys-header.ftl">
 <div id="body" class="fullscreen full_height">
 	<div id="side_bar">
