@@ -70,7 +70,7 @@ MyCallback({
 		<a name="dates"></a>
 		<h2>${rc.getMessage("tools.api.menu.dates")}</h2>
 		<p class="api-path round">http://data.canadensys.net/tools/dates.json<span class="separator">${rc.getMessage("tools.api.uri.separator")}</span>http://data.canadensys.net/tools/dates.xml</p>
-		<p><em>${rc.getMessage("tools.common.abbrev.example")}</em> http://data.canadensys.net/tools/dates.json?<strong>data</strong>=Jun 13, 2008</p>
+		<p><em>${rc.getMessage("tools.common.abbrev.example")}</em> http://data.canadensys.net/tools/dates.json?<strong>data</strong>=Jun 13, 2008&amp;<strong>callback</strong>=MyCallback</p>
 		<p><span>${rc.getMessage("tools.api.output.heading")}</span>
 			<pre>
 MyCallback({
