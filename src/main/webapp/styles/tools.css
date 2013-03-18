@@ -37,3 +37,5 @@ div.side_menu li{border:none;}
 .api-uri{padding:0.7em;font-size:1.5em;}
 .api-path{padding:0.5em;font-size:1.2em;}
 .separator{display:block;margin:1em 0em;font-style:italic;}
+
+pre{font-family: "Lucida Grande",Arial,Sans-Serif;}
