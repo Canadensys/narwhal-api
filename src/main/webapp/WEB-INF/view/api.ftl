@@ -43,7 +43,30 @@ MyCallback({
 })
 			</pre>
 		</p>
-		
+
+		<p><em>e.g.</em> http://data.canadensys.net/tools/coordinates.xml?<strong>data</strong>=35|45° 32' 25"N,-129° 40' 31"W&amp;<strong>callback</strong>=MyCallback</p>
+		<p><span>Produces</span>
+			<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;gml:FeatureCollection
+     xmlns:xs="http://www.w3.org/2001/XMLSchema"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     xmlns:gml="http://www.opengis.net/gml"    
+     xmlns:sch="http://www.ascc.net/xml/schematron"&gt;
+  &lt;gml:featureMembers&gt;
+    &lt;xs:coordinatesList gml:id="35"&gt;
+      &lt;xs:coordinate&gt;
+        &lt;gml:Point srsDimension="2"&gt;
+          &lt;gml:pos&gt;-129.67527777777778 45.540277777777774&lt;/gml:pos&gt;
+        &lt;/gml:Point&gt;
+      &lt;/xs:coordinate&gt;
+      &lt;xs:originalValue&gt;45° 32' 25"N,-129° 40' 31"W&lt;/xs:originalValue&gt;
+    &lt;/xs:coordinatesList&gt;
+  &lt;/gml:featureMembers&gt;
+&lt;/gml:FeatureCollection&gt;
+			</pre>
+		</p>
+
 		<a name="dates"></a>
 		<h2>${rc.getMessage("tools.api.menu.dates")}</h2>
 		<p class="api-path round">http://data.canadensys.net/tools/dates.json<span class="separator">${rc.getMessage("tools.api.uri.separator")}</span>http://data.canadensys.net/tools/dates.xml</p>
