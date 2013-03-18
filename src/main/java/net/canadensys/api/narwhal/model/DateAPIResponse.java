@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,6 +24,9 @@ public class DateAPIResponse {
 	@JsonProperty(value="results")
 	@XmlElement(name="result")
 	private List<DateAPIResponseElement> processedDateList;
+	
+	@JsonIgnore
+	private boolean idProvided = false;
 	
 	public DateAPIResponse(){
 		processedDateList = new ArrayList<DateAPIResponse.DateAPIResponseElement>();
@@ -70,12 +74,20 @@ public class DateAPIResponse {
 		return processedDateList;
 	}
 	
+	public boolean isIdProvided() {
+		return idProvided;
+	}
+	public void setIdProvided(boolean idProvided) {
+		this.idProvided = idProvided;
+	}
+	
 	/**
 	 * Public inner class to ease serialization.
 	 * Need to be public to allow Java Bean usage.
 	 * @author canadensys
 	 *
 	 */
+	@JsonInclude(Include.NON_NULL)
 	public static class DateAPIResponseElement{
 		private String id;
 		private String originalValue;
@@ -138,3 +150,5 @@ public class DateAPIResponse {
 		}
 	}
 }
+
+
