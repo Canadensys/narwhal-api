@@ -22,7 +22,7 @@
 		<h2>${rc.getMessage("tools.api.menu.coordinates")}</h2>
 		<p class="api-path round">http://data.canadensys.net/tools/coordinates.json<span class="separator">${rc.getMessage("tools.api.uri.separator")}</span>http://data.canadensys.net/tools/coordinates.xml</p>
 		<p>${rc.getMessage("tools.api.coordinates.description", ["http://www.geojson.org/", "http://en.wikipedia.org/wiki/Geography_Markup_Language"])}</p>
-		<p><em>${rc.getMessage("tools.common.abbrev.example")}</em> http://data.canadensys.net/tools/coordinates.json?<strong>data</strong>=35|45° 32' 25"N,-129° 40' 31"W&amp;<strong>callback</strong>=MyCallback</p>
+		<p><em>${rc.getMessage("tools.common.abbrev.example")}</em> http://data.canadensys.net/tools/coordinates.json?<strong>data</strong>=35|45° 32' 25"N,129° 40' 31"W&amp;<strong>callback</strong>=MyCallback</p>
 		<p><span>${rc.getMessage("tools.api.output.heading")}</span>
 			<pre>
 MyCallback({
@@ -35,7 +35,7 @@ MyCallback({
       coordinates: [-129.6753, 45.5403]
     },
     properties: {
-      originalValue: "45° 32' 25"N,-129° 40' 31"W"
+      originalValue: "45° 32' 25"N,129° 40' 31"W"
     },
     id: "35"
   }
@@ -44,7 +44,7 @@ MyCallback({
 			</pre>
 		</p>
 
-		<p><em>e.g.</em> http://data.canadensys.net/tools/coordinates.xml?<strong>data</strong>=35|45° 32' 25"N,-129° 40' 31"W&amp;<strong>callback</strong>=MyCallback</p>
+		<p><em>e.g.</em> http://data.canadensys.net/tools/coordinates.xml?<strong>data</strong>=35|45° 32' 25"N,129° 40' 31"W&amp;<strong>callback</strong>=MyCallback</p>
 		<p><span>Produces</span>
 			<pre>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -60,7 +60,7 @@ MyCallback({
           &lt;gml:pos&gt;-129.67527777777778 45.540277777777774&lt;/gml:pos&gt;
         &lt;/gml:Point&gt;
       &lt;/xs:coordinate&gt;
-      &lt;xs:originalValue&gt;45° 32' 25"N,-129° 40' 31"W&lt;/xs:originalValue&gt;
+      &lt;xs:originalValue&gt;45° 32' 25"N,129° 40' 31"W&lt;/xs:originalValue&gt;
     &lt;/xs:result&gt;
   &lt;/gml:featureMembers&gt;
 &lt;/gml:FeatureCollection&gt;
