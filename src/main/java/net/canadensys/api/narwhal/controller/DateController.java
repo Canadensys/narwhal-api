@@ -1,8 +1,8 @@
 package net.canadensys.api.narwhal.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,8 +11,6 @@ import net.canadensys.api.narwhal.service.APIService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,8 +28,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class DateController {
 	
+	//Own Jackson Object Mapper to add JSONP support
 	public static final ObjectMapper JACKSON_MAPPER = new ObjectMapper();
-	private static final Pattern LINE_ID_VALUE = Pattern.compile(".+[\t|].+");
 		
 	@Autowired
 	private APIService apiService;
@@ -44,9 +42,11 @@ public class DateController {
 	 * @return JSONP response
 	 */
 	@RequestMapping(value={"/dates.json"}, method=RequestMethod.GET, params="callback")
-	public ResponseEntity<String> handleJSONP(@RequestParam String data, @RequestParam String callback,
+	public void handleJSONP(@RequestParam String data, @RequestParam String callback,
 			HttpServletResponse response){
 		
+		//make sure the answer is set as UTF-8
+		response.setCharacterEncoding("UTF-8");
 		response.setContentType(APIControllerHelper.JSONP_CONTENT_TYPE);
 		
 		if(APIControllerHelper.JSONP_ACCEPTED_CHAR_PATTERN.matcher(callback).matches()){
@@ -58,20 +58,23 @@ public class DateController {
 
 			APIControllerHelper.splitIdAndData(data, dataList, idList);
 			apiResponse = apiService.processDates(dataList, idList);
-			for(String str : idList){
-				if(!StringUtils.isBlank(str)){
-					apiResponse.setIdProvided(true);
-				}
-			}
 			
 			try {
 				json = JACKSON_MAPPER.writeValueAsString(apiResponse);
+				
+				String responseTxt = callback + "("+json+");";
+				response.getWriter().print(responseTxt);
+				response.setContentLength(responseTxt.length());
+				response.getWriter().close();
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			return new ResponseEntity<String>(callback +"("+json+");", HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("error", HttpStatus.BAD_REQUEST);
+		else{
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		}
 	}
 	
 	/**
@@ -92,8 +95,6 @@ public class DateController {
 		}
 		
 		DateAPIResponse apiResponse = null;
-		//make sure the answer is set as UTF-8
-		//response.setCharacterEncoding("UTF-8");
 
 		List<String> dataList = new ArrayList<String>();
 		List<String> idList = new ArrayList<String>();
@@ -101,12 +102,8 @@ public class DateController {
 		APIControllerHelper.splitIdAndData(data, dataList, idList);
 		
 		apiResponse = apiService.processDates(dataList, idList);
-		//check if at least one line is providing an id
-		for(String str : idList){
-			if(!StringUtils.isBlank(str)){
-				apiResponse.setIdProvided(true);
-			}
-		}
+		apiResponse.setIdProvided(APIControllerHelper.containsAtLeastOneNonBlank(idList));
+		
 		model.addAttribute("data", apiResponse);
 		return "dates-results";
 	}

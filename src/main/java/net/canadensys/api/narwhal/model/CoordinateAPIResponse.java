@@ -9,13 +9,13 @@ import org.apache.commons.lang3.StringUtils;
  * API Response object for coordinates processing.
  * @author canadensys
  */
-public class APICoordinateResponse {
+public class CoordinateAPIResponse {
 	
 	private List<CoordinateAPIResponseElement> processedCoordinateList;
 	
 	private boolean idProvided = false;
 	
-	public APICoordinateResponse(){
+	public CoordinateAPIResponse(){
 		processedCoordinateList = new ArrayList<CoordinateAPIResponseElement>();
 	}
 	

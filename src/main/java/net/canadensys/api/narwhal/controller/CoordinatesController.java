@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
-import net.canadensys.api.narwhal.model.APICoordinateResponse;
+import net.canadensys.api.narwhal.model.CoordinateAPIResponse;
 import net.canadensys.api.narwhal.model.GeoToolsModelBuilder;
 import net.canadensys.api.narwhal.service.APIService;
 
@@ -69,17 +69,11 @@ public class CoordinatesController {
 		List<String> dataList = new ArrayList<String>();
 		List<String> idList = new ArrayList<String>();
 
-		APICoordinateResponse apiResponse;
+		CoordinateAPIResponse apiResponse;
 		APIControllerHelper.splitIdAndData(data, dataList, idList);
 		
 		apiResponse = apiService.processCoordinates(dataList, idList);
-
-		//check if at least one line is providing an id
-		for(String str : idList){
-			if(!StringUtils.isBlank(str)){
-				apiResponse.setIdProvided(true);
-			}
-		}
+		apiResponse.setIdProvided(APIControllerHelper.containsAtLeastOneNonBlank(idList));
 		
 		model.addAttribute("data", apiResponse);
 		return "coordinates-results";
@@ -95,7 +89,7 @@ public class CoordinatesController {
 	@ResponseBody
 	public String handleCoordinatesXml(@RequestParam String data, HttpServletResponse response){
 		String returnString;
-		APICoordinateResponse apiResponse;
+		CoordinateAPIResponse apiResponse;
 		//make sure the answer is set as UTF-8
 		response.setCharacterEncoding("UTF-8");
 
@@ -131,7 +125,7 @@ public class CoordinatesController {
 			List<String> idList = new ArrayList<String>();
 
 			APIControllerHelper.splitIdAndData(data, dataList, idList);
-			APICoordinateResponse apiResponse;
+			CoordinateAPIResponse apiResponse;
 			apiResponse = apiService.processCoordinates(dataList, idList);
 						
 			StringWriter sw = new StringWriter();
@@ -148,6 +142,9 @@ public class CoordinatesController {
 				e.printStackTrace();
 			}
 		}
+		else{
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		}
 	}
 	
 	/**
@@ -160,7 +157,7 @@ public class CoordinatesController {
 	@RequestMapping(value="/coordinates.json", method={RequestMethod.GET,RequestMethod.POST},params="!callback")
 	@ResponseBody
 	public String handleCoordinatesJson(@RequestParam String data, HttpServletResponse response){
-		APICoordinateResponse apiResponse;
+		CoordinateAPIResponse apiResponse;
 		String returnString;
 		//make sure the answer is set as UTF-8
 		response.setCharacterEncoding("UTF-8");
@@ -187,11 +184,11 @@ public class CoordinatesController {
 	 * @param repList APICoordinateResponse list
 	 * @return
 	 */
-	private SimpleFeatureCollection buildSimpleFeatureCollection(APICoordinateResponse repList){
+	private SimpleFeatureCollection buildSimpleFeatureCollection(CoordinateAPIResponse repList){
 		DefaultFeatureCollection collection = new DefaultFeatureCollection();
 		SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(FEATURE_TYPE);
 		
-		for(APICoordinateResponse.CoordinateAPIResponseElement currRep : repList.getProcessedCoordinateList()){
+		for(CoordinateAPIResponse.CoordinateAPIResponseElement currRep : repList.getProcessedCoordinateList()){
 			if(currRep != null && currRep.getDecimalLatitude() != null && currRep.getDecimalLongitude() != null){
 				/* Longitude (= x coord) first ! */
 		        Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(currRep.getDecimalLongitude(), currRep.getDecimalLatitude()));
