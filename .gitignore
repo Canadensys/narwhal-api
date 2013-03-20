@@ -4,3 +4,10 @@
 *.jar
 *.war
 *.ear
+*.project
+*.classpath
+*.DS_Store
+
+/target
+/build
+/.gradle

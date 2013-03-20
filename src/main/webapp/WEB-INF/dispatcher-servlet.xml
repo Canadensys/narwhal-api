@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <context:component-scan base-package="net.canadensys.api.narwhal"/>
+    
+    <mvc:annotation-driven/>
+    
+    <mvc:interceptors>
+		<!-- Changes the locale when a 'lang' request parameter is sent; e.g. /?lang=fr -->
+		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+	    		<property name="paramName" value="lang"></property>
+		</bean>
+	</mvc:interceptors>
+    
+    <mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/styles/**" location="/styles/" />
+    
+    <bean id="messageSource"
+	    class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+	    <property name="basename" value="classpath:messages" />
+	    <property name="defaultEncoding" value="UTF-8"/>
+	</bean>
+    
+	<!-- Locale/language configuration -->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<property name="defaultLocale" value="en" />
+	</bean>
+		
+	<!-- Freemarker config -->
+	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+  		<property name="templateLoaderPath" value="/WEB-INF/view/"/>
+	</bean>
+	
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+	  <property name="order" value="1" />
+	  <property name="mediaTypes">
+		<map>
+		   <entry key="json" value="application/json" />
+		   <entry key="xml" value="application/xml" />
+		</map>
+	  </property>
+ 
+	  <property name="defaultViews">
+		<list>
+		  <!-- JSON View -->
+		  <bean
+			class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+		  </bean>
+ 
+		  <!-- JAXB XML View -->
+		  <bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+			<constructor-arg>
+				<bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+				<property name="packagesToScan">
+					<list>
+					   <value>net.canadensys.api.narwhal.model</value>
+					</list>
+				   </property>
+				   </bean>
+			</constructor-arg>
+		  </bean>
+		 </list>
+	  </property>
+	  <property name="ignoreAcceptHeader" value="true" />
+	</bean>
+	
+	<bean id="freeMarkerViewResolver" 
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="order" value="2" />
+		<property name="cache" value="true"/>
+		<property name="prefix" value=""/>
+		<property name="suffix" value=".ftl"/>
+		<property name="contentType" value="text/html;charset=UTF-8"/>
+		<property name="requestContextAttribute" value="rc"/>
+	</bean>
+
+</beans>

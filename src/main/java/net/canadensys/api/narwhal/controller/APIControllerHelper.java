@@ -29,10 +29,11 @@ public class APIControllerHelper {
 		
 		for(String currLine : lines){
 			String[] dataParts = currLine.split(DATA_SEPARATOR);
+			//if we only find one element
 			if(dataParts.length == 1){
 				idList.add(null);
 				dataList.add(dataParts[0].trim());
-			}
+			}//if we find more than one, we use the first as ID, second as data. If there is more, it will be ignored.
 			else if(dataParts.length > 1){
 				idList.add(dataParts[0].trim());
 				dataList.add(dataParts[1].trim());

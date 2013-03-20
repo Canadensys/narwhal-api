@@ -1,4 +1,4 @@
-package net.canadensys.api.narwhal.model;
+package net.canadensys.api.narwhal.geotools;
 
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;

@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
+import net.canadensys.api.narwhal.geotools.GMLWriter;
+import net.canadensys.api.narwhal.geotools.GeoToolsModelBuilder;
 import net.canadensys.api.narwhal.model.CoordinateAPIResponse;
-import net.canadensys.api.narwhal.model.GeoToolsModelBuilder;
 import net.canadensys.api.narwhal.service.APIService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,17 +33,13 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 /**
- * Coodrinates processing controller.
+ * Coordinates processing controller.
  * 
  * @author canadensys
  *
  */
 @Controller
 public class CoordinatesController {
-	
-	
-	private static final Pattern SINGLE_VALUE = Pattern.compile("[\\w.: °'\"′″]+,[\\w.: °'\"′″]+[\n]?");
-	private static final Pattern LINE_ID_VALUE = Pattern.compile(".+[\t|][\\-\\w.: °'\"′″]+,[\\-\\w.: °'\"′″]+[\n]?");
 	
 	private static final SimpleFeatureType FEATURE_TYPE = GeoToolsModelBuilder.createFeatureType();
 	private static final GeometryFactory GEOMETRY_FACTORY = JTSFactoryFinder.getGeometryFactory(null);

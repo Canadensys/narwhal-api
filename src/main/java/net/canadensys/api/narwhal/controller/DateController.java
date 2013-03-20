@@ -95,6 +95,8 @@ public class DateController {
 		}
 		
 		DateAPIResponse apiResponse = null;
+		
+		response.setCharacterEncoding("UTF-8");
 
 		List<String> dataList = new ArrayList<String>();
 		List<String> idList = new ArrayList<String>();
