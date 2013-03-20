@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -65,6 +66,7 @@ public class DateAPIResponse {
 		}
 		dateResponseElement.setPartial((y == null || m == null || d == null));
 		if(!dateResponseElement.isPartial()){
+			//TODO : generate incomplete ISO date
 			dateResponseElement.setIsoDate(y+"-"+m+"-"+d);
 		}
 		processedDateList.add(dateResponseElement);
@@ -74,6 +76,7 @@ public class DateAPIResponse {
 		return processedDateList;
 	}
 	
+	@XmlTransient
 	public boolean isIdProvided() {
 		return idProvided;
 	}

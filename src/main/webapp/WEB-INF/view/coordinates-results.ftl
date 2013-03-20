@@ -11,14 +11,14 @@
 		<table class="narwhal-results">
 			<thead>
 				<tr>
-					<#if (root.idProvided)!false><td class="identifier">id</td></#if><td class="original">${rc.getMessage("tools.common.original")}</td><td>decimalLatitude</td><td>decimalLongitude</td>
+					<#if (data.idProvided)!false><td class="identifier">id</td></#if><td class="original">${rc.getMessage("tools.common.original")}</td><td>decimalLatitude</td><td>decimalLongitude</td>
 				</tr>
 			</thead>
 			<tbody>
 			<#assign row_odd=true>
-			<#list root.results as currCoordinate>
+			<#list data.processedCoordinateList as currCoordinate>
 				<tr class=<#if row_odd>"odd"<#else>"even"</#if>>
-					<#if root.idProvided><td>${(currCoordinate.id)!}</td></#if><td class="original">${currCoordinate.originalValue?html}</td><td>${currCoordinate.decimalLatitude?if_exists}</td><td>${currCoordinate.decimalLongitude?if_exists}</td>
+					<#if data.idProvided><td>${(currCoordinate.id)!}</td></#if><td class="original">${currCoordinate.originalValue?html}</td><td>${currCoordinate.decimalLatitude?if_exists}</td><td>${currCoordinate.decimalLongitude?if_exists}</td>
 				</tr>
 				<#assign row_odd=!row_odd>
 			</#list>
