@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.canadensys.api.narwhal.model.DateAPIResponse;
 import net.canadensys.api.narwhal.service.APIService;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -28,6 +31,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class DateController {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DateController.class);
+	
 	//Own Jackson Object Mapper to add JSONP support
 	public static final ObjectMapper JACKSON_MAPPER = new ObjectMapper();
 		
@@ -43,7 +48,7 @@ public class DateController {
 	 */
 	@RequestMapping(value={"/dates.json"}, method=RequestMethod.GET, params="callback")
 	public void handleJSONP(@RequestParam String data, @RequestParam String callback,
-			HttpServletResponse response){
+			 HttpServletRequest request, HttpServletResponse response){
 		
 		//make sure the answer is set as UTF-8
 		response.setCharacterEncoding("UTF-8");
@@ -66,6 +71,9 @@ public class DateController {
 				response.getWriter().print(responseTxt);
 				response.setContentLength(responseTxt.length());
 				response.getWriter().close();
+				
+				LOGGER.info("Date(jsonp)|{}|{}|{}", request.getMethod(), request.getRequestURI(), request.getRemoteAddr());
+				
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -87,8 +95,7 @@ public class DateController {
 	 */
 	@RequestMapping(value={"/dates"}, method={RequestMethod.GET,RequestMethod.POST}, params="!callback")
 	public String handleDatesParsing(@RequestParam(required=false) String data,
-			@RequestParam(required=false)String callback,
-			ModelMap model, HttpServletResponse response){
+			ModelMap model, HttpServletRequest request, HttpServletResponse response){
 		
 		if(StringUtils.isBlank(data)){
 			return "dates";
@@ -106,6 +113,7 @@ public class DateController {
 		apiResponse = apiService.processDates(dataList, idList);
 		apiResponse.setIdProvided(APIControllerHelper.containsAtLeastOneNonBlank(idList));
 		
+		LOGGER.info("Date|{}|{}|{}", request.getMethod(), request.getRequestURI(), request.getRemoteAddr());
 		model.addAttribute("data", apiResponse);
 		return "dates-results";
 	}

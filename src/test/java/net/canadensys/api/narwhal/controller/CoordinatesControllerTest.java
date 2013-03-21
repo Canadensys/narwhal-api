@@ -20,6 +20,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+/**
+ * Tests for API functions regarding Coordinates processing.
+ * This won't test the HTML page.
+ * @author canadensys
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:test-dispatcher-servlet.xml")
@@ -93,10 +99,4 @@ public class CoordinatesControllerTest {
     	.andExpect(content().encoding("UTF-8"))
     	.andExpect(content().contentType("application/x-javascript"));
     }
-    
-//    @Test
-//    public void testCoordinatesHTML() throws Exception {
-//    	this.mockMvc.perform(get("/coordinates.html").param("data","1 | 45.5° N, 129.6° W"))
-//    	.andExpect(status().isOk());
-//    }
 }

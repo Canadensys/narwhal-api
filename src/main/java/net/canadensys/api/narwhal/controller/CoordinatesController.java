@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.canadensys.api.narwhal.geotools.GMLWriter;
@@ -20,6 +21,8 @@ import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -41,6 +44,8 @@ import com.vividsolutions.jts.geom.Point;
 @Controller
 public class CoordinatesController {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CoordinatesController.class);
+	
 	private static final SimpleFeatureType FEATURE_TYPE = GeoToolsModelBuilder.createFeatureType();
 	private static final GeometryFactory GEOMETRY_FACTORY = JTSFactoryFinder.getGeometryFactory(null);
 	
@@ -56,7 +61,8 @@ public class CoordinatesController {
 	 * @return
 	 */
 	@RequestMapping(value={"/coordinates"}, method={RequestMethod.GET,RequestMethod.POST})
-	public String handleCoordinatesHtml(@RequestParam(required=false) String data, ModelMap model){
+	public String handleCoordinatesHtml(@RequestParam(required=false) String data, ModelMap model,
+			HttpServletRequest request){
 		
 		if(StringUtils.isBlank(data)){
 			return "coordinates";
@@ -71,6 +77,8 @@ public class CoordinatesController {
 		apiResponse = apiService.processCoordinates(dataList, idList);
 		apiResponse.setIdProvided(APIControllerHelper.containsAtLeastOneNonBlank(idList));
 		
+		LOGGER.info("Coordinate|{}|{}|{}", request.getMethod(), request.getRequestURI(), request.getRemoteAddr());
+		
 		model.addAttribute("data", apiResponse);
 		return "coordinates-results";
 	}
@@ -83,7 +91,7 @@ public class CoordinatesController {
 	 */
 	@RequestMapping(value="/coordinates.xml", method={RequestMethod.GET,RequestMethod.POST},produces = "application/xml;charset=UTF-8")
 	@ResponseBody
-	public String handleCoordinatesXml(@RequestParam String data, HttpServletResponse response){
+	public String handleCoordinatesXml(@RequestParam String data, HttpServletRequest request, HttpServletResponse response){
 		String returnString;
 		CoordinateAPIResponse apiResponse;
 		//make sure the answer is set as UTF-8
@@ -95,7 +103,9 @@ public class CoordinatesController {
 	
 		apiResponse = apiService.processCoordinates(dataList, idList);
 		returnString = gmlWriter.toGML(buildSimpleFeatureCollection(apiResponse));
-
+		
+		LOGGER.info("Coordinate|{}|{}|{}", request.getMethod(), request.getRequestURI(), request.getRemoteAddr());
+		
 		return returnString;
 	}
 	
@@ -110,7 +120,7 @@ public class CoordinatesController {
 	 */
 	@RequestMapping(value="/coordinates.json", method={RequestMethod.GET},params="callback")
 	public void handleJSONP(@RequestParam String data, @RequestParam String callback,
-			HttpServletResponse response){
+			HttpServletRequest request, HttpServletResponse response){
 		
 		//make sure the answer is set as UTF-8
 		response.setCharacterEncoding("UTF-8");
@@ -134,6 +144,9 @@ public class CoordinatesController {
 				response.getWriter().print(responseTxt);
 				response.setContentLength(responseTxt.length());
 				response.getWriter().close();
+				
+				LOGGER.info("Coordinate(jsonp)|{}|{}|{}", request.getMethod(), request.getRequestURI(), request.getRemoteAddr());
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -152,7 +165,7 @@ public class CoordinatesController {
 	 */
 	@RequestMapping(value="/coordinates.json", method={RequestMethod.GET,RequestMethod.POST},params="!callback")
 	@ResponseBody
-	public String handleCoordinatesJson(@RequestParam String data, HttpServletResponse response){
+	public String handleCoordinatesJson(@RequestParam String data, HttpServletRequest request, HttpServletResponse response){
 		CoordinateAPIResponse apiResponse;
 		String returnString;
 		//make sure the answer is set as UTF-8
@@ -166,8 +179,11 @@ public class CoordinatesController {
 		
 		StringWriter sw = new StringWriter();
 		try {
-			org.geotools.geojson.feature.FeatureJSON a = new FeatureJSON();
-			a.writeFeatureCollection(buildSimpleFeatureCollection(apiResponse), sw);
+			org.geotools.geojson.feature.FeatureJSON fj = new FeatureJSON();
+			fj.writeFeatureCollection(buildSimpleFeatureCollection(apiResponse), sw);
+			
+			LOGGER.info("Coordinate|{}|{}|{}", request.getMethod(), request.getRequestURI(), request.getRemoteAddr());
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

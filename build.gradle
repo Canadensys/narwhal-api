@@ -34,6 +34,7 @@ dependencies {
 	compile group: 'org.hibernate', name: 'hibernate-validator', version: '4.3.1.Final'
 	
 	compile group: 'log4j', name: 'log4j', version: '1.2.17'
+	compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.2'
 	
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonVersion
@@ -50,7 +51,6 @@ dependencies {
 war {
 	webInf { from "../canadensys-view-includes/WEB-INF" }
 }
-
 
 task concatProperties << {
 	ant.concat(
