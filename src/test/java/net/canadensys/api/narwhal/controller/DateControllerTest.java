@@ -47,6 +47,13 @@ public class DateControllerTest {
         	.andExpect(content().contentType("application/json")) //this is a bug in Spring 3.2, charset should be avoided  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         	.andExpect(jsonPath("$.data.results.[0].year").value(2012));
         
+    	//test GET (partial date)
+        this.mockMvc.perform(get("/dates.json").param("data","2012/12"))
+        	.andExpect(status().isOk())
+        	.andExpect(content().encoding("UTF-8"))
+        	.andExpect(content().contentType("application/json")) //this is a bug in Spring 3.2, charset should be avoided  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        	.andExpect(jsonPath("$.data.results.[0].isoDate").value("2012-12"));
+        
         //test POST
         this.mockMvc.perform(post("/dates.json").param("data","2012/12/10"))
         	.andExpect(status().isOk())

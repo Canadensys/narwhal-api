@@ -65,10 +65,19 @@ public class DateAPIResponse {
 			dateResponseElement.setError(error);
 		}
 		dateResponseElement.setPartial((y == null || m == null || d == null));
-		if(!dateResponseElement.isPartial()){
-			//TODO : generate incomplete ISO date
-			dateResponseElement.setIsoDate(y+"-"+m+"-"+d);
+		//Compute the ISO date (including partial date)
+		if(y != null){
+			//not fancy, but easy to understand
+			String isoDate = y.toString();
+			if(m != null){
+				isoDate += "-" + m.toString();
+				if(d != null){
+					isoDate += "-" + d.toString();
+				}
+			}
+			dateResponseElement.setIsoDate(isoDate);
 		}
+		
 		processedDateList.add(dateResponseElement);
 	}
 	
