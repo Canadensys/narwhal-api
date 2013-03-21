@@ -17,7 +17,7 @@
 			<tbody>
 			<#assign row_odd=true>
 			<#list data.processedDateList as currDate>
-				<tr class=<#if row_odd>"odd"<#else>"even"</#if>>
+				<tr class=<#if row_odd>"odd<#else>"even</#if><#if (currDate.error)??> error</#if>">
 					<#if data.idProvided><td>${(currDate.id)!}</td></#if><td class="original">${currDate.originalValue?html}</td><td>${(currDate.year?c)!}</td><td>${currDate.month!}</td><td>${currDate.day!}</td><td>${currDate.isoDate!}</td>
 				</tr>
 				<#assign row_odd=!row_odd>
