@@ -50,6 +50,7 @@ dependencies {
 //WAR plugin settings
 war {
 	webInf { from "../canadensys-view-includes/WEB-INF" }
+	webInf { from "config" }
 }
 
 task concatProperties << {

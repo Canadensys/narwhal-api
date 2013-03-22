@@ -44,8 +44,8 @@ MyCallback({
 			</pre>
 		</p>
 
-		<p><em>e.g.</em> http://data.canadensys.net/tools/coordinates.xml?<strong>data</strong>=35|45° 32' 25"N,129° 40' 31"W&amp;<strong>callback</strong>=MyCallback</p>
-		<p><span>Produces</span>
+		<p><em>${rc.getMessage("tools.common.abbrev.example")}</em> http://data.canadensys.net/tools/coordinates.xml?<strong>data</strong>=35|45° 32' 25"N,129° 40' 31"W&amp;<strong>callback</strong>=MyCallback</p>
+		<p><span>${rc.getMessage("tools.api.output.heading")}</span>
 			<pre>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;gml:FeatureCollection
