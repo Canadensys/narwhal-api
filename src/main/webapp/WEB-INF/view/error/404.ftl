@@ -4,7 +4,8 @@
 <#include "../inc/canadensys-header.ftl">
 <div id="body">
 	<div id="content" class="no_side_bar">
-		<h1>404</h1>
+		<h1>${rc.getMessage("tools.common.404.title")}</h1>
+		<p>${rc.getMessage("tools.common.404.description")}</p>
 	</div>
 </div>
 <#include "../inc/footer.ftl">
