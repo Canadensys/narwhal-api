@@ -20,7 +20,7 @@
 		<form class="narwhal-form" method="post">
 			<p>${rc.getMessage("tools.coordinates.description")}</p>
 			<div class="round custom-form">
-				<textarea name="data" rows="15" class="round" placeholder="45° 32' 25&quot; N, -129° 40' 31&quot; W"></textarea>
+				<textarea name="data" rows="15" class="round" placeholder="45° 32' 25&quot; N, 129° 40' 31&quot; W"></textarea>
 				<input type="submit" value="${rc.getMessage("tools.common.form.submit")}" class="round" />
 			</div>
 		</form>
