@@ -57,7 +57,7 @@ MyCallback({
     &lt;xs:result gml:id="35"&gt;
       &lt;xs:coordinate&gt;
         &lt;gml:Point srsDimension="2"&gt;
-          &lt;gml:pos&gt;-129.67527777777778 45.540277777777774&lt;/gml:pos&gt;
+          &lt;gml:pos&gt;45.540277777777774 -129.67527777777778&lt;/gml:pos&gt;
         &lt;/gml:Point&gt;
       &lt;/xs:coordinate&gt;
       &lt;xs:originalValue&gt;45° 32' 25"N,129° 40' 31"W&lt;/xs:originalValue&gt;
