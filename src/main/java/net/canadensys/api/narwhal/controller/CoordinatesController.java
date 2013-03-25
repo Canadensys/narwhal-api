@@ -54,6 +54,12 @@ public class CoordinatesController {
 	@Autowired
 	private APIService apiService;
 	
+	
+	@RequestMapping(value="/")
+	public String handleLandingPage(){
+		return "redirect:/coordinates";
+	}
+	
 	/**
 	 * Handles HTML representation of a coordinates processing.
 	 * @param data

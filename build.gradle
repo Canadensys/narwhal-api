@@ -25,7 +25,7 @@ dependencies {
 	
 	compile group: 'org.geotools', name: 'gt-geojson', version: geotoolsVersion
 	compile group: 'org.geotools', name: 'gt-xml', version: geotoolsVersion
-	compile group: 'net.canadensys', name: 'narwhal-processor', version: '1.0-SNAPSHOT'
+	compile group: 'net.canadensys', name: 'narwhal-processor', version: '1.0'
 	compile group: 'org.springframework', name: 'spring-webmvc', version: springVersion
 	compile group: 'org.springframework', name: 'spring-web', version: springVersion
 	compile group: 'org.springframework', name: 'spring-oxm', version: springVersion
