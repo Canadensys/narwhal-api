@@ -23,11 +23,11 @@ public class CoordinateAPIResponse {
 	 * Add a new processed coordinate to the result object
 	 * @param id
 	 * @param originalValue
-	 * @param decimalLongitude
 	 * @param decimalLatitude
+	 * @param decimalLongitude
 	 * @param error
 	 */
-	public void addProcessedCoordinate(String id, String originalValue, Double decimalLongitude, Double decimalLatitude, String error){
+	public void addProcessedCoordinate(String id, String originalValue, Double decimalLatitude, Double decimalLongitude, String error){
 		CoordinateAPIResponseElement dateResponseElement = new CoordinateAPIResponseElement();
 		dateResponseElement.setId(id);
 		dateResponseElement.setOriginalValue(originalValue);
