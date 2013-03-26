@@ -1,5 +1,6 @@
 package net.canadensys.api.narwhal.controller;
 
+import static org.hamcrest.text.IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -7,6 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
 
+import java.io.File;
+import java.nio.charset.Charset;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +33,10 @@ import org.springframework.web.context.WebApplicationContext;
 @WebAppConfiguration
 @ContextConfiguration("classpath:test-dispatcher-servlet.xml")
 public class DateControllerTest {
+	
+	private static final File EXPECTED_JSON_FILE = new File("src/test/resources/expectedResults/expected_dates.json");
+	private static final File EXPECTED_XML_FILE = new File("src/test/resources/expectedResults/expected_dates.xml");
+	
 	@Autowired
     private WebApplicationContext wac;
 
@@ -52,7 +61,7 @@ public class DateControllerTest {
         	.andExpect(status().isOk())
         	.andExpect(content().encoding("UTF-8"))
         	.andExpect(content().contentType("application/json")) //this is a bug in Spring 3.2, charset should be avoided  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        	.andExpect(jsonPath("$.data.results.[0].isoDate").value("2012-12"));
+        	.andExpect(jsonPath("$.data.results.[0].iso8601").value("2012-12"));
         
         //test POST
         this.mockMvc.perform(post("/dates.json").param("data","2012/12/10"))
@@ -65,6 +74,11 @@ public class DateControllerTest {
         this.mockMvc.perform(get("/dates.json").param("data","12,25"))
         	.andExpect(status().isOk())
         	.andExpect(jsonPath("$.data.results[0].error").exists());
+        
+        //test full JSON content
+        String expectedJSONContent = FileUtils.readFileToString(EXPECTED_JSON_FILE, Charset.forName("UTF-8"));
+        this.mockMvc.perform(get("/dates.json").param("data","2009 IV 02"))
+        	.andExpect(content().string(equalToIgnoringWhiteSpace(expectedJSONContent)));
     }
     
     @Test
@@ -83,5 +97,10 @@ public class DateControllerTest {
         	.andExpect(content().encoding("UTF-8"))
         	.andExpect(content().contentType("application/xml")) //this is a bug in Spring 3.2, charset should be avoided  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         	.andExpect(xpath("/results/result/year").number(2012d));
+        
+        //test full JSON content
+        String expectedXMLContent = FileUtils.readFileToString(EXPECTED_XML_FILE, Charset.forName("UTF-8"));
+        this.mockMvc.perform(get("/dates.xml").param("data","2009 IV 02"))
+        	.andExpect(content().string(equalToIgnoringWhiteSpace(expectedXMLContent)));
     }
 }

@@ -68,14 +68,14 @@ public class DateAPIResponse {
 		//Compute the ISO date (including partial date)
 		if(y != null){
 			//not fancy, but easy to understand
-			String isoDate = y.toString();
+			String iso8601 = y.toString();
 			if(m != null){
-				isoDate += "-" + m.toString();
+				iso8601 += "-" + StringUtils.leftPad(m.toString(), 2, '0');
 				if(d != null){
-					isoDate += "-" + d.toString();
+					iso8601 += "-" + StringUtils.leftPad(d.toString(), 2, '0');
 				}
 			}
-			dateResponseElement.setIsoDate(isoDate);
+			dateResponseElement.setIso8601(iso8601);
 		}
 		
 		processedDateList.add(dateResponseElement);
@@ -108,7 +108,7 @@ public class DateAPIResponse {
 		private Integer day;
 		
 		private boolean isPartial;
-		private String isoDate;
+		private String iso8601;
 		private String error;
 		
 		public Integer getYear() {
@@ -136,11 +136,11 @@ public class DateAPIResponse {
 		public void setPartial(boolean isPartial) {
 			this.isPartial = isPartial;
 		}
-		public String getIsoDate() {
-			return isoDate;
+		public String getIso8601() {
+			return iso8601;
 		}
-		public void setIsoDate(String isoDate) {
-			this.isoDate = isoDate;
+		public void setIso8601(String iso8601) {
+			this.iso8601 = iso8601;
 		}
 		public String getOriginalValue() {
 			return originalValue;

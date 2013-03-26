@@ -1,4 +1,5 @@
 package net.canadensys.api.narwhal.controller;
+import static org.hamcrest.text.IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -6,9 +7,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
 
+import java.io.File;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +34,9 @@ import org.springframework.web.context.WebApplicationContext;
 @WebAppConfiguration
 @ContextConfiguration("classpath:test-dispatcher-servlet.xml")
 public class CoordinatesControllerTest {
+	
+	private static final File EXPECTED_GEOJSON_FILE = new File("src/test/resources/expectedResults/expected_coordinates.json");
+	private static final File EXPECTED_GML_FILE = new File("src/test/resources/expectedResults/expected_coordinates.xml");
 	
 	@Autowired
     private WebApplicationContext wac;
@@ -61,6 +68,11 @@ public class CoordinatesControllerTest {
         this.mockMvc.perform(get("/coordinates.json").param("data","12,25"))
         	.andExpect(status().isOk())
         	.andExpect(jsonPath("$.features[0].properties.error").exists());
+        
+        //test full JSON content
+        String expectedGeoJSONContent = FileUtils.readFileToString(EXPECTED_GEOJSON_FILE, Charset.forName("UTF-8"));
+        this.mockMvc.perform(get("/coordinates.json").param("data","1\t45.5° N, 129.6° W"))
+        	.andExpect(content().string(equalToIgnoringWhiteSpace(expectedGeoJSONContent)));
     }
     
     @Test
@@ -90,6 +102,11 @@ public class CoordinatesControllerTest {
         	.andExpect(status().isOk())
         	.andExpect(xpath("/gml:FeatureCollection/gml:featureMembers/xs:result/xs:error",
     			namespaces).exists());
+        
+        //test full XML content
+        String expectedGMLContent = FileUtils.readFileToString(EXPECTED_GML_FILE,Charset.forName("UTF-8"));
+        this.mockMvc.perform(get("/coordinates.xml").param("data","1\t45.5° N, 129.6° W"))
+        	.andExpect(content().string(equalToIgnoringWhiteSpace(expectedGMLContent)));
     }
     
     @Test
