@@ -63,7 +63,7 @@ dependencies {
     
     tomcat("org.apache.tomcat:catalina:${tomcatVersion}")
     tomcat("org.apache.tomcat:coyote:${tomcatVersion}")
-    tomcat("org.apache.tomcat:coyote:${tomcatVersion}")
+    tomcat("org.apache.tomcat:jasper:${tomcatVersion}")
 }
 
 //WAR plugin settings
