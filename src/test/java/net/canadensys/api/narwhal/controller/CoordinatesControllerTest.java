@@ -71,7 +71,7 @@ public class CoordinatesControllerTest {
         
         //test full JSON content
         String expectedGeoJSONContent = FileUtils.readFileToString(EXPECTED_GEOJSON_FILE, Charset.forName("UTF-8"));
-        this.mockMvc.perform(get("/coordinates.json").param("data","1\t45.5° N, 129.6° W"))
+        this.mockMvc.perform(get("/coordinates.json").param("data","1\t45° 32' 25\"N, 129.6° W"))
         	.andExpect(content().string(equalToIgnoringWhiteSpace(expectedGeoJSONContent)));
     }
     

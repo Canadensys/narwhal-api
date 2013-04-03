@@ -18,6 +18,7 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geojson.feature.FeatureJSON;
+import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -45,6 +46,7 @@ import com.vividsolutions.jts.geom.Point;
 public class CoordinatesController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CoordinatesController.class);
+	private static final int JSON_NUMBER_DECIMALS = 7;
 	
 	private static final SimpleFeatureType FEATURE_TYPE = GeoToolsModelBuilder.createFeatureType();
 	private static final GeometryFactory GEOMETRY_FACTORY = JTSFactoryFinder.getGeometryFactory(null);
@@ -143,7 +145,8 @@ public class CoordinatesController {
 			StringWriter sw = new StringWriter();
 
 			try {
-				org.geotools.geojson.feature.FeatureJSON a = new FeatureJSON();
+				GeometryJSON gjson = new GeometryJSON(7);
+				org.geotools.geojson.feature.FeatureJSON a = new FeatureJSON(gjson);
 				a.writeFeatureCollection(buildSimpleFeatureCollection(apiResponse), sw);
 
 				String responseTxt = callback + "("+sw.toString()+");";
@@ -185,7 +188,8 @@ public class CoordinatesController {
 		
 		StringWriter sw = new StringWriter();
 		try {
-			org.geotools.geojson.feature.FeatureJSON fj = new FeatureJSON();
+			GeometryJSON gjson = new GeometryJSON(JSON_NUMBER_DECIMALS);
+			org.geotools.geojson.feature.FeatureJSON fj = new FeatureJSON(gjson);
 			fj.writeFeatureCollection(buildSimpleFeatureCollection(apiResponse), sw);
 			
 			LOGGER.info("Coordinate|{}|{}|{}", request.getMethod(), request.getRequestURI(), request.getRemoteAddr());

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gml:FeatureCollection xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:sch="http://www.ascc.net/xml/schematron">
+<?xml version="1.0" encoding="UTF-8"?><gml:FeatureCollection xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:sch="http://www.ascc.net/xml/schematron">
   <gml:featureMembers>
     <xs:result gml:id="1">
       <xs:coordinate>
