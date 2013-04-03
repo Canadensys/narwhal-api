@@ -32,7 +32,7 @@ MyCallback({
     type: "Feature",
     geometry: {
       type: "Point",
-      coordinates: [-129.6753, 45.5403]
+      coordinates: [-129.6752778,45.5402778]
     },
     properties: {
       originalValue: "45° 32' 25"N,129° 40' 31"W"
@@ -40,7 +40,7 @@ MyCallback({
     id: "35"
   }
   ]
-})
+});
 			</pre>
 		</p>
 
