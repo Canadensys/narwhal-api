@@ -3,6 +3,9 @@ apply plugin: 'war'
 apply plugin: 'eclipse'
 apply plugin: 'tomcat'
 
+//Make sure tomcat will run with the right encoding
+System.setProperty('file.encoding', 'UTF-8')
+
 repositories {
 	maven {url 'http://repo.opengeo.org'}
 	maven {url 'http://download.java.net/maven/2'}
@@ -18,7 +21,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:0.9.7'
+        classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:0.9.8'
     }
 }
 
@@ -28,6 +31,7 @@ ext {
 	geotoolsVersion = '10-SNAPSHOT'
 	sourceEncoding = 'UTF-8'
 	tomcatVersion = '6.0.29'
+	seleniumVersion = '2.31.0'
 }
 
 compileJava.options.encoding = sourceEncoding
@@ -60,6 +64,9 @@ dependencies {
 	testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3'	
     testCompile group: 'org.springframework', name: 'spring-test', version: springVersion
     testCompile group: 'com.jayway.jsonpath', name: 'json-path', version: '0.8.1'
+    testCompile group: 'org.seleniumhq.selenium', name :'selenium-java',version:seleniumVersion
+    testCompile group: 'org.seleniumhq.selenium', name :'selenium-firefox-driver',version:seleniumVersion
+    testCompile group: 'org.seleniumhq.selenium', name :'selenium-htmlunit-driver',version:seleniumVersion
     
     tomcat("org.apache.tomcat:catalina:${tomcatVersion}")
     tomcat("org.apache.tomcat:coyote:${tomcatVersion}")
@@ -74,11 +81,30 @@ war {
 
 test {
     systemProperties 'file.encoding': 'UTF-8'
+    exclude '**/*IntegrationTest.*'
 }
 
 tomcatRunWar {
     httpPort = 9966
     contextPath = 'tools'
+    stopKey = 'stopKey'
+}
+
+tomcatStop {
+	stopKey = 'stopKey'
+}
+
+task integrationTest(type: Test) {
+    include '**/*IntegrationTest.*'
+
+    doFirst {
+        tomcatRunWar.daemon = true
+        tomcatRunWar.execute()
+    }
+
+    doLast {
+        tomcatStop.execute()
+    }
 }
 
 task concatProperties << {
