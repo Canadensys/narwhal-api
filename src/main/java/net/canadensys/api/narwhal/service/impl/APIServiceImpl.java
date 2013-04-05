@@ -66,8 +66,7 @@ public class APIServiceImpl implements APIService{
 		int idx = 0;
 		
 		for(String dateText : rawDates){
-			Integer[] dateParts = new Integer[3];
-			dateProcessor.process(dateText, dateParts, pr);
+			Integer[] dateParts = dateProcessor.process(dateText,pr);
 			apiResponse.addProcessedDate(idList.get(idx),dateText, dateParts[DateProcessor.YEAR_IDX], dateParts[DateProcessor.MONTH_IDX], dateParts[DateProcessor.DAY_IDX], pr.getErrorString());
 			idx++;
 			//we want to reuse the same object

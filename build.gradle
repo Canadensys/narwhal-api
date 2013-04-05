@@ -43,7 +43,7 @@ dependencies {
 	
 	compile group: 'org.geotools', name: 'gt-geojson', version: geotoolsVersion
 	compile group: 'org.geotools', name: 'gt-xml', version: geotoolsVersion
-	compile group: 'net.canadensys', name: 'narwhal-processor', version: '1.0'
+	compile group: 'net.canadensys', name: 'narwhal-processor', version: '1.1'
 	compile group: 'org.springframework', name: 'spring-webmvc', version: springVersion
 	compile group: 'org.springframework', name: 'spring-web', version: springVersion
 	compile group: 'org.springframework', name: 'spring-oxm', version: springVersion
@@ -110,12 +110,16 @@ task integrationTest(type: Test) {
 task concatProperties << {
 	ant.concat(
 		append : "yes",
+		encoding : "UTF-8",
+		outputencoding : "UTF-8",
 		destfile:"${sourceSets.main.output.resourcesDir}/messages_en.properties") {
 			fileset(dir:'../canadensys-view-includes/resources/',includes:'messages_en.properties')
 	}
 	
 	ant.concat(
 		append : "yes",
+		encoding : "UTF-8",
+		outputencoding : "UTF-8",
 		destfile:"${sourceSets.main.output.resourcesDir}/messages_fr.properties") {
 			fileset(dir:'../canadensys-view-includes/resources/',includes:'messages_fr.properties')
 	}
