@@ -43,7 +43,7 @@ dependencies {
 	
 	compile group: 'org.geotools', name: 'gt-geojson', version: geotoolsVersion
 	compile group: 'org.geotools', name: 'gt-xml', version: geotoolsVersion
-	compile group: 'net.canadensys', name: 'narwhal-processor', version: '1.1'
+	compile group: 'net.canadensys', name: 'narwhal-processor', version: '1.2'
 	compile group: 'org.springframework', name: 'spring-webmvc', version: springVersion
 	compile group: 'org.springframework', name: 'spring-web', version: springVersion
 	compile group: 'org.springframework', name: 'spring-oxm', version: springVersion
@@ -76,7 +76,7 @@ dependencies {
 //WAR plugin settings
 war {
 	webInf { from "../canadensys-view-includes/WEB-INF" }
-	webInf { from "config" }
+	webInf { from "config/production" }
 }
 
 test {
@@ -87,7 +87,7 @@ test {
 tomcatRunWar {
     httpPort = 9966
     contextPath = 'tools'
-    stopKey = 'stopKey'
+    stopKey = 'stopKey' 
 }
 
 tomcatStop {
@@ -96,7 +96,7 @@ tomcatStop {
 
 task integrationTest(type: Test) {
     include '**/*IntegrationTest.*'
-
+	
     doFirst {
         tomcatRunWar.daemon = true
         tomcatRunWar.execute()
@@ -106,6 +106,14 @@ task integrationTest(type: Test) {
         tomcatStop.execute()
     }
 }
+
+//we use local config file for these tasks
+onlyFor(integrationTest) {
+	war.webInf { from "config/local" }
+}
+onlyFor(tomcatRunWar) {
+	war.webInf { from "config/local" }
+} 
 
 task concatProperties << {
 	ant.concat(
@@ -126,4 +134,14 @@ task concatProperties << {
 }
 //Do concatProperties before WAR
 war.dependsOn concatProperties
+//Do war before integrationTest since we use tomcatRunWar
+integrationTest.dependsOn war
+
+def onlyFor(task, config) {
+    gradle.taskGraph.whenReady { graph ->
+        if (graph.hasTask(task)) { 
+            project.configure(project, config)
+        }
+    }
+}
 	
