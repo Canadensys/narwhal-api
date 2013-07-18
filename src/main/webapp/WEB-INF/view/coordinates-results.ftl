@@ -18,7 +18,7 @@
 			<#assign row_odd=true>
 			<#list data.processedCoordinateList as currCoordinate>
 				<tr class=<#if row_odd>"odd<#else>"even</#if><#if (currCoordinate.error)??> error</#if>">
-					<#if data.idProvided><td>${(currCoordinate.id?html)!}</td></#if><td class="original">${currCoordinate.originalValue?html}</td><td>${currCoordinate.decimalLatitude?if_exists?if_exists?string("0.#######")}</td><td>${currCoordinate.decimalLongitude?if_exists?if_exists?string("0.#######")}</td>
+					<#if data.idProvided><td>${(currCoordinate.id?html)!}</td></#if><td class="original">${currCoordinate.originalValue?html}</td><td><#if currCoordinate.decimalLatitude??>${currCoordinate.decimalLatitude?string("0.#######")}</#if></td><td><#if currCoordinate.decimalLongitude??>${currCoordinate.decimalLongitude?string("0.#######")}</#if></td>
 				</tr>
 				<#assign row_odd=!row_odd>
 			</#list>
