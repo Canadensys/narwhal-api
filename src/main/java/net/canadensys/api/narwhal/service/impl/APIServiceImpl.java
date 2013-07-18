@@ -11,6 +11,7 @@ import net.canadensys.processor.geography.CoordinatePairProcessor;
 import net.canadensys.processor.geography.DegreeMinuteToDecimalProcessor;
 import net.canadensys.processor.geography.LatLongProcessorHelper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,6 +27,56 @@ public class APIServiceImpl implements APIService{
 	private DateProcessor dateProcessor = new DateProcessor();
 	
 	@Override
+	public CoordinateAPIResponse processCoordinates(List<String> rawCoordinates, List<String> idList, List<String> fallbackList) {
+		//TODO validate that rawCoordinates and idList have the same size
+		Double[] output = new Double[2];
+		CoordinateAPIResponse apiResponse = new CoordinateAPIResponse();
+		ProcessingResult pr = new ProcessingResult();
+		
+		String[] latLong = null;
+		boolean idFound = false;
+		Double decimalLat, decimalLong;
+		
+		int idx = 0;
+		String id;
+		for(String currCoordinate : rawCoordinates){
+			decimalLat = null;
+			decimalLong = null;
+			//extract lat/long from the pair
+			latLong = coordinatePairProcessor.process(currCoordinate, pr);
+			
+			//if we can't extract it from the rawCoordinates, try the fallback list.
+			if(latLong == null){
+				latLong = coordinatePairProcessor.process(fallbackList.get(idx), pr);
+				//ignore the id
+				id = null;
+			}
+			else{
+				id = idList.get(idx);
+			}
+			
+			if(latLong != null){
+				output = degreeMinuteToDecimalProcessor.process(latLong[LatLongProcessorHelper.LATITUDE_IDX],latLong[LatLongProcessorHelper.LONGITUDE_IDX],pr);				
+				if(output[0] != null && output[1] != null){
+					decimalLat = output[LatLongProcessorHelper.LATITUDE_IDX];
+					decimalLong = output[LatLongProcessorHelper.LONGITUDE_IDX];
+				}
+			}	
+			
+			if(!idFound && (StringUtils.isNotBlank(id))){
+				idFound = true;
+			}
+			apiResponse.addProcessedCoordinate(id, currCoordinate, decimalLat, decimalLong, pr.getErrorString());
+			
+			//we want to reuse the same object
+			pr.clear();
+			idx++;
+		}
+		apiResponse.setIdProvided(idFound);
+		return apiResponse;
+	}
+	
+	@Override
 	public CoordinateAPIResponse processCoordinates(List<String> rawCoordinates, List<String> idList) {
 		//TODO validate that rawCoordinates and idList have the same size
 		Double[] output = new Double[2];
@@ -36,13 +87,12 @@ public class APIServiceImpl implements APIService{
 		Double decimalLat, decimalLong;
 		
 		int idx = 0;
-		
 		for(String currCoordinate : rawCoordinates){
 			decimalLat = null;
 			decimalLong = null;
 			//extract lat/long from the pair
 			latLong = coordinatePairProcessor.process(currCoordinate, pr);
-			
+
 			if(latLong != null){
 				output = degreeMinuteToDecimalProcessor.process(latLong[LatLongProcessorHelper.LATITUDE_IDX],latLong[LatLongProcessorHelper.LONGITUDE_IDX],pr);				
 				if(output[0] != null && output[1] != null){
@@ -56,6 +106,35 @@ public class APIServiceImpl implements APIService{
 			//we want to reuse the same object
 			pr.clear();
 			idx++;
+		}
+		return apiResponse;
+	}
+	
+	@Override
+	public CoordinateAPIResponse processCoordinates(List<String> rawCoordinates) {
+		Double[] output = new Double[2];
+		CoordinateAPIResponse apiResponse = new CoordinateAPIResponse();
+		ProcessingResult pr = new ProcessingResult();
+		
+		String[] latLong = null;
+		Double decimalLat, decimalLong;
+		
+		for(String currCoordinate : rawCoordinates){
+			decimalLat = null;
+			decimalLong = null;
+			//extract lat/long from the pair
+			latLong = coordinatePairProcessor.process(currCoordinate, pr);
+			
+			if(latLong != null){
+				output = degreeMinuteToDecimalProcessor.process(latLong[LatLongProcessorHelper.LATITUDE_IDX],latLong[LatLongProcessorHelper.LONGITUDE_IDX],pr);				
+				if(output[0] != null && output[1] != null){
+					decimalLat = output[LatLongProcessorHelper.LATITUDE_IDX];
+					decimalLong = output[LatLongProcessorHelper.LONGITUDE_IDX];
+				}
+			}
+			apiResponse.addProcessedCoordinate(null, currCoordinate, decimalLat, decimalLong, pr.getErrorString());
+			//we want to reuse the same object
+			pr.clear();
 		}
 		return apiResponse;
 	}

@@ -22,7 +22,7 @@
 		<h2>${rc.getMessage("tools.api.menu.coordinates")}</h2>
 		<p class="api-path round">http://data.canadensys.net/tools/coordinates.json<span class="separator">${rc.getMessage("tools.api.uri.separator")}</span>http://data.canadensys.net/tools/coordinates.xml</p>
 		<p>${rc.getMessage("tools.api.coordinates.description", ["http://www.geojson.org/", "http://en.wikipedia.org/wiki/Geography_Markup_Language"])}</p>
-		<p><em>${rc.getMessage("tools.common.abbrev.example")}</em> http://data.canadensys.net/tools/coordinates.json?<strong>data</strong>=35|45° 32' 25"N,129° 40' 31"W&amp;<strong>callback</strong>=MyCallback</p>
+		<p><em>${rc.getMessage("tools.common.abbrev.example")}</em> http://data.canadensys.net/tools/coordinates.json?<strong>data</strong>=35|45° 32' 25"N,129° 40' 31"W&amp;<strong>idprovided</strong>=TRUE&amp;<strong>callback</strong>=MyCallback</p>
 		<p><span>${rc.getMessage("tools.api.output.heading")}</span>
 			<pre>
 MyCallback({

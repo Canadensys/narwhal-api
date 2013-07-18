@@ -13,6 +13,7 @@ import net.canadensys.api.narwhal.geotools.GeoToolsModelBuilder;
 import net.canadensys.api.narwhal.model.CoordinateAPIResponse;
 import net.canadensys.api.narwhal.service.APIService;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
@@ -56,7 +57,6 @@ public class CoordinatesController {
 	@Autowired
 	private APIService apiService;
 	
-	
 	@RequestMapping(value="/")
 	public String handleLandingPage(){
 		return "redirect:/coordinates";
@@ -65,26 +65,20 @@ public class CoordinatesController {
 	/**
 	 * Handles HTML representation of a coordinates processing.
 	 * @param data
+	 * @param idprovided
 	 * @param model
+	 * @param request
 	 * @return
 	 */
 	@RequestMapping(value={"/coordinates"}, method={RequestMethod.GET,RequestMethod.POST})
-	public String handleCoordinatesHtml(@RequestParam(required=false) String data, ModelMap model,
+	public String handleCoordinatesHtml(@RequestParam(required=false) String data, @RequestParam(required=false) Boolean idprovided, ModelMap model,
 			HttpServletRequest request){
 		
 		if(StringUtils.isBlank(data)){
 			return "coordinates";
 		}
 				
-		List<String> dataList = new ArrayList<String>();
-		List<String> idList = new ArrayList<String>();
-
-		CoordinateAPIResponse apiResponse;
-		APIControllerHelper.splitIdAndData(data, dataList, idList);
-		
-		apiResponse = apiService.processCoordinates(dataList, idList);
-		apiResponse.setIdProvided(APIControllerHelper.containsAtLeastOneNonBlank(idList));
-		
+		CoordinateAPIResponse apiResponse = generateCoordinateAPIResponse(data,idprovided);
 		LOGGER.info("Coordinate|{}|{}|{}", request.getMethod(), request.getRequestURI(), request.getRemoteAddr());
 		
 		model.addAttribute("data", apiResponse);
@@ -94,22 +88,19 @@ public class CoordinatesController {
 	/**
 	 * Handle GML(xml) representation of a coordinates processing.
 	 * @param data query string parameters
+	 * @param idprovided
+	 * @param request
 	 * @param response 
 	 * @return GML3 xml string
 	 */
 	@RequestMapping(value="/coordinates.xml", method={RequestMethod.GET,RequestMethod.POST},produces = "application/xml;charset=UTF-8")
 	@ResponseBody
-	public String handleCoordinatesXml(@RequestParam String data, HttpServletRequest request, HttpServletResponse response){
+	public String handleCoordinatesXml(@RequestParam String data, @RequestParam(required=false) Boolean idprovided, HttpServletRequest request, HttpServletResponse response){
 		String returnString;
-		CoordinateAPIResponse apiResponse;
 		//make sure the answer is set as UTF-8
 		response.setCharacterEncoding("UTF-8");
 
-		List<String> dataList = new ArrayList<String>();
-		List<String> idList = new ArrayList<String>();
-		APIControllerHelper.splitIdAndData(data, dataList, idList);
-	
-		apiResponse = apiService.processCoordinates(dataList, idList);
+		CoordinateAPIResponse apiResponse = generateCoordinateAPIResponse(data,idprovided);
 		returnString = gmlWriter.toGML(buildSimpleFeatureCollection(apiResponse));
 		
 		LOGGER.info("Coordinate|{}|{}|{}", request.getMethod(), request.getRequestURI(), request.getRemoteAddr());
@@ -123,11 +114,13 @@ public class CoordinatesController {
 	 * MappingJackson2HttpMessageConverter is not supporting JSONP and custom implementation
 	 * seems to conflict with ContentNegotiatingViewResolver (we want application/x-javascript and ask it with .json).
 	 * @param data
+	 * @param idprovided
 	 * @param callback
+	 * @param request
 	 * @param response
 	 */
 	@RequestMapping(value="/coordinates.json", method={RequestMethod.GET},params="callback")
-	public void handleJSONP(@RequestParam String data, @RequestParam String callback,
+	public void handleJSONP(@RequestParam String data, @RequestParam(required=false) Boolean idprovided, @RequestParam String callback,
 			HttpServletRequest request, HttpServletResponse response){
 		
 		//make sure the answer is set as UTF-8
@@ -135,15 +128,9 @@ public class CoordinatesController {
 		response.setContentType(APIControllerHelper.JSONP_CONTENT_TYPE);
 				
 		if(APIControllerHelper.JSONP_ACCEPTED_CHAR_PATTERN.matcher(callback).matches()){
-			List<String> dataList = new ArrayList<String>();
-			List<String> idList = new ArrayList<String>();
 
-			APIControllerHelper.splitIdAndData(data, dataList, idList);
-			CoordinateAPIResponse apiResponse;
-			apiResponse = apiService.processCoordinates(dataList, idList);
-						
+			CoordinateAPIResponse apiResponse = generateCoordinateAPIResponse(data,idprovided);
 			StringWriter sw = new StringWriter();
-
 			try {
 				GeometryJSON gjson = new GeometryJSON(7);
 				org.geotools.geojson.feature.FeatureJSON a = new FeatureJSON(gjson);
@@ -168,23 +155,20 @@ public class CoordinatesController {
 	/**
 	 * Handle GeoJSON representation of a coordinates processing.
 	 * @param data
-	 * @param callback
+	 * @param idprovided
+	 * @param request
 	 * @param response
 	 * @return
 	 */
 	@RequestMapping(value="/coordinates.json", method={RequestMethod.GET,RequestMethod.POST},params="!callback")
 	@ResponseBody
-	public String handleCoordinatesJson(@RequestParam String data, HttpServletRequest request, HttpServletResponse response){
+	public String handleCoordinatesJson(@RequestParam String data, @RequestParam(required=false) Boolean idprovided, HttpServletRequest request, HttpServletResponse response){
 		CoordinateAPIResponse apiResponse;
 		String returnString;
 		//make sure the answer is set as UTF-8
 		response.setCharacterEncoding("UTF-8");
 		
-		List<String> dataList = new ArrayList<String>();
-		List<String> idList = new ArrayList<String>();
-		APIControllerHelper.splitIdAndData(data, dataList, idList);
-		
-		apiResponse = apiService.processCoordinates(dataList, idList);
+		apiResponse = generateCoordinateAPIResponse(data,idprovided);
 		
 		StringWriter sw = new StringWriter();
 		try {
@@ -199,6 +183,32 @@ public class CoordinatesController {
 		}
 		returnString= sw.toString();
 		return returnString;
+	}
+	
+	/**
+	 * Generate the appropriate CoordinateAPIResponse according to the provided data and "hint"
+	 * @param data
+	 * @param idprovided Boolean.TRUE, Boolean.FALSE or null if no specified
+	 * @return
+	 */
+	private CoordinateAPIResponse generateCoordinateAPIResponse(String data, Boolean idprovided){
+		List<String> dataList = new ArrayList<String>();
+		List<String> idList = new ArrayList<String>();
+		
+		//check if we have a hint about the id column
+		if(BooleanUtils.isTrue(idprovided)){
+			APIControllerHelper.splitIdAndData(data, dataList, idList);
+			return apiService.processCoordinates(dataList, idList);
+		}
+		else if(BooleanUtils.isFalse(idprovided)){
+			APIControllerHelper.splitData(data, dataList);
+			return apiService.processCoordinates(dataList);
+		}
+		else{ //idprovided == null, we need to guess
+			List<String> fallbackList = new ArrayList<String>();
+			APIControllerHelper.splitIdAndData(data, dataList, idList,fallbackList);
+			return apiService.processCoordinates(dataList, idList,fallbackList);
+		}
 	}
 	
 	/**
