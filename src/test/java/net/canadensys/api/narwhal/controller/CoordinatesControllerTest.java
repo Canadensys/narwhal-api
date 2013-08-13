@@ -62,7 +62,8 @@ public class CoordinatesControllerTest {
         	.andExpect(status().isOk())
         	.andExpect(content().encoding("UTF-8"))
         	.andExpect(content().contentType("application/json;charset=UTF-8")) //this is a bug in Spring 3.2, charset should be avoided  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        	.andExpect(jsonPath("$.features[0].geometry.coordinates[0]").exists());
+        	.andExpect(jsonPath("$.features[0].geometry.coordinates[0]").exists())
+        	.andExpect(jsonPath("$.features[0].properties.originalValue").value("2:3:4N\t5:6:7W"));
         
     	//test GET with no ID and tab as coordinates separator but give a hint that an ID is(should be) provided
         //the expected behavior is to NOT return results since 2:3:4N is the id and 5:6:7W is the coordinates (according to what we ask)
@@ -77,7 +78,8 @@ public class CoordinatesControllerTest {
         	.andExpect(status().isOk())
         	.andExpect(content().encoding("UTF-8"))
         	.andExpect(content().contentType("application/json;charset=UTF-8")) //this is a bug in Spring 3.2, charset should be avoided  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        	.andExpect(jsonPath("$.features[0].geometry.coordinates[0]").exists());
+        	.andExpect(jsonPath("$.features[0].geometry.coordinates[0]").exists())
+        	.andExpect(jsonPath("$.features[0].properties.originalValue").value("2:3:4N,5:6:7W"));
         
         //test with error
         this.mockMvc.perform(get("/coordinates.json").param("data","12,25"))
