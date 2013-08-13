@@ -43,9 +43,24 @@ public class APIWebPageIntegrationTest extends AbstractIntegrationTest {
 		
 		dataTextArea.sendKeys("2 | 40°26′47″N,74° 0' 21.5022\"W");
 		submit.click();
-				
+		
+		assertEquals("2", resultTableBody.findElement(By.cssSelector("td:nth-child(1)")).getText());
+		assertEquals("40°26′47″N,74° 0' 21.5022\"W", resultTableBody.findElement(By.cssSelector("td:nth-child(2)")).getText());
 		assertEquals("40.4463889", resultTableBody.findElement(By.cssSelector("td:nth-child(3)")).getText());
 		assertEquals("-74.0059728", resultTableBody.findElement(By.cssSelector("td:nth-child(4)")).getText());
+	}
+
+	@Test
+	public void testCoordinatesWithTabPage() {
+		//Coordinates is the landing page
+		browser.get(TESTING_SERVER_URL + "?data=45.5%C2%B0%20N%09129.6%C2%B0%20W");
+		
+		//bind the WebElement to the current page
+		PageFactory.initElements(browser, this);
+		
+		assertEquals("45.5, -129.6", resultTableBody.findElement(By.cssSelector("td:nth-child(1)")).getText());
+		assertEquals("45.5", resultTableBody.findElement(By.cssSelector("td:nth-child(2)")).getText());
+		assertEquals("-129.6", resultTableBody.findElement(By.cssSelector("td:nth-child(3)")).getText());
 	}
 	
 	@Test
