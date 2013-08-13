@@ -39,17 +39,22 @@ public class APIServiceImpl implements APIService{
 		
 		int idx = 0;
 		String id;
+		String rawCoordinate;
 		for(String currCoordinate : rawCoordinates){
 			decimalLat = null;
 			decimalLong = null;
+			rawCoordinate = currCoordinate;
 			//extract lat/long from the pair
 			latLong = coordinatePairProcessor.process(currCoordinate, pr);
 			
 			//if we can't extract it from the rawCoordinates, try the fallback list.
 			if(latLong == null){
+				//clear the error since we are trying another process(...) call
+				pr.clear();
 				latLong = coordinatePairProcessor.process(fallbackList.get(idx), pr);
 				//ignore the id
 				id = null;
+				rawCoordinate = fallbackList.get(idx);
 			}
 			else{
 				id = idList.get(idx);
@@ -66,7 +71,7 @@ public class APIServiceImpl implements APIService{
 			if(!idFound && (StringUtils.isNotBlank(id))){
 				idFound = true;
 			}
-			apiResponse.addProcessedCoordinate(id, currCoordinate, decimalLat, decimalLong, pr.getErrorString());
+			apiResponse.addProcessedCoordinate(id, rawCoordinate, decimalLat, decimalLong, pr.getErrorString());
 			
 			//we want to reuse the same object
 			pr.clear();
