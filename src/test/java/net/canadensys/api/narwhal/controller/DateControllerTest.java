@@ -86,7 +86,7 @@ public class DateControllerTest {
     	this.mockMvc.perform(get("/dates.json").param("data","2012/12/10").param("callback", "callme"))
 	    	.andExpect(status().isOk())
 	    	.andExpect(content().encoding("UTF-8"))
-	    	.andExpect(content().contentType("application/x-javascript")); //this is a bug in Spring 3.2, charset should be avoided  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+	    	.andExpect(content().contentType("application/x-javascript"));
     }
     
     @Test

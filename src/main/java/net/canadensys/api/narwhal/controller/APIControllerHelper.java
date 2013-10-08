@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 /**
+ * Candidate for future canadensys-web-core library
  * Helper class used to for different API controllers.
  * @author canadensys
  *
