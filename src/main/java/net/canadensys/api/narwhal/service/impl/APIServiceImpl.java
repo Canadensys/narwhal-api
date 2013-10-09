@@ -54,7 +54,10 @@ public class APIServiceImpl implements APIService{
 				latLong = coordinatePairProcessor.process(fallbackList.get(idx), pr);
 				//ignore the id
 				id = null;
-				rawCoordinate = fallbackList.get(idx);
+				//if currCoordinate equals the entire string provided, the fallback will be null
+				if(fallbackList.get(idx) != null){
+					rawCoordinate = fallbackList.get(idx);
+				}
 			}
 			else{
 				id = idList.get(idx);
