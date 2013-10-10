@@ -49,13 +49,14 @@ public class APIServiceImpl implements APIService{
 			
 			//if we can't extract it from the rawCoordinates, try the fallback list.
 			if(latLong == null){
-				//clear the error since we are trying another process(...) call
-				pr.clear();
-				latLong = coordinatePairProcessor.process(fallbackList.get(idx), pr);
 				//ignore the id
 				id = null;
+				
 				//if currCoordinate equals the entire string provided, the fallback will be null
 				if(fallbackList.get(idx) != null){
+					//clear the error since we are trying another process(...) call
+					pr.clear();
+					latLong = coordinatePairProcessor.process(fallbackList.get(idx), pr);
 					rawCoordinate = fallbackList.get(idx);
 				}
 			}

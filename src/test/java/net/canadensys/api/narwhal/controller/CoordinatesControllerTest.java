@@ -93,6 +93,16 @@ public class CoordinatesControllerTest {
     }
     
     @Test
+    public void testCoordinatesError() throws Exception{
+    	//test GET
+        this.mockMvc.perform(get("/coordinates.json").param("data","45°30′N 73°34′W"))
+        	.andExpect(status().isOk())
+        	.andExpect(content().encoding("UTF-8"))
+        	.andExpect(content().contentType("application/json;charset=UTF-8")) //this is a bug in Spring 3.2, charset should be avoided  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        	.andExpect(jsonPath("$.features[0].properties.error").exists());
+    }
+    
+    @Test
     public void testCoordinatesXML() throws Exception {
         Map<String,String> namespaces = new HashMap<String, String>();
         namespaces.put("xs", "http://www.w3.org/2001/XMLSchema");
