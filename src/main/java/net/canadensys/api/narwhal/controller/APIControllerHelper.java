@@ -61,6 +61,7 @@ public class APIControllerHelper {
 			if(dataParts.length == 1){
 				idList.add(null);
 				if(fallbackList!=null){
+					//add null since the dataList already contains the entire string
 					fallbackList.add(null);
 				}
 				dataList.add(dataParts[0].trim());
