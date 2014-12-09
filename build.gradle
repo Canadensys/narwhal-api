@@ -1,13 +1,13 @@
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'eclipse'
-apply plugin: 'tomcat'
+apply plugin: 'com.bmuschko.tomcat'
 
 //Make sure tomcat will run with the right encoding
 System.setProperty('file.encoding', 'UTF-8')
 
 repositories {
-	maven {url 'http://repo.opengeo.org'}
+	maven {url 'http://download.osgeo.org/webdav/geotools'}
 	maven {url 'http://download.java.net/maven/2'}
 
     mavenCentral()
@@ -17,32 +17,34 @@ repositories {
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
 
     dependencies {
-        classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:0.9.8'
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.0'
     }
 }
 
 ext {
-sourceEncoding = 'UTF-8'
+	sourceEncoding = 'UTF-8'
 
     springVersion = '3.2.4.RELEASE'
     jacksonVersion = '2.2.3'
-	geotoolsVersion = '10.0'
-	tomcatVersion = '6.0.29'
-	seleniumVersion = '2.33.0'
+	geotoolsVersion = '10.8'
+	tomcatVersion = '7.0.11'
+	seleniumVersion = '2.44.0'
 }
 
 compileJava.options.encoding = sourceEncoding
 compileTestJava.options.encoding = sourceEncoding
 
 dependencies {
-	providedCompile group: 'javax.servlet', name: 'servlet-api', version: '2.5'
+	providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
 	providedCompile group: 'javax.servlet', name: 'jsp-api', version: '2.0'
 	
 	compile group: 'org.geotools', name: 'gt-geojson', version: geotoolsVersion
 	compile group: 'org.geotools', name: 'gt-xml', version: geotoolsVersion
+	compile group: 'org.geotools', name: 'gt-epsg-hsql', version: geotoolsVersion
 	compile group: 'net.canadensys', name: 'narwhal-processor', version: '1.4'
 	compile group: 'org.springframework', name: 'spring-webmvc', version: springVersion
 	compile group: 'org.springframework', name: 'spring-web', version: springVersion
@@ -68,10 +70,12 @@ dependencies {
     testCompile group: 'org.seleniumhq.selenium', name :'selenium-firefox-driver',version:seleniumVersion
     testCompile group: 'org.seleniumhq.selenium', name :'selenium-htmlunit-driver',version:seleniumVersion
     
-    tomcat("org.apache.tomcat:catalina:${tomcatVersion}")
-    tomcat("org.apache.tomcat:coyote:${tomcatVersion}")
-    tomcat("org.apache.tomcat:jasper:${tomcatVersion}")
-}
+    tomcat("org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}")
+    tomcat("org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}")
+   	tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+    }
+ }
 
 //WAR plugin settings
 war {
