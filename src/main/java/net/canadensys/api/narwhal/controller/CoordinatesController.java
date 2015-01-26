@@ -56,11 +56,21 @@ public class CoordinatesController {
 	
 	@Autowired
 	private APIService apiService;
-	
-	@RequestMapping(value="/")
+    
+	@RequestMapping(value="/", method=RequestMethod.GET)
 	public String handleLandingPage(){
 		return "redirect:/coordinates";
 	}
+	
+	/**
+	 * Response to HEAD request with a HTTP_OK and no content, as defined by the standard.
+	 * @param response
+	 */
+    @RequestMapping(value={"/", "/coordinates"}, method=RequestMethod.HEAD)
+    public void healthCheckHead(HttpServletResponse response) {
+        response.setContentLength(0);
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
 	
 	/**
 	 * Handles HTML representation of a coordinates processing.

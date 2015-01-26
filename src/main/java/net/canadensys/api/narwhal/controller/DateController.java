@@ -40,6 +40,16 @@ public class DateController {
 	private APIService apiService;
 	
 	/**
+	 * Response to HEAD request with a HTTP_OK and no content, as defined by the standard.
+	 * @param response
+	 */
+    @RequestMapping(value="/dates", method=RequestMethod.HEAD)
+    public void healthCheckHead(HttpServletResponse response) {
+        response.setContentLength(0);
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+	
+	/**
 	 * Handle dates parsing for JSONP
 	 * @param data
 	 * @param callback

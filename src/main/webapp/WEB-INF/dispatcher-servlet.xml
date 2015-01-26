@@ -38,9 +38,13 @@
 		<property name="locations">
 			<list>
 				<value>/WEB-INF/narwhal-api-config.properties</value>
-<!-- 				<value>/WEB-INF/version.properties</value> -->
+				<value>/WEB-INF/version.properties</value>
 			</list>
 		</property>
+	</bean>
+	
+	<bean id="appConfig" class="net.canadensys.api.narwhal.config.APIConfiguration">
+		<property name="currentVersion" value="${version.current:}" />
 	</bean>
     
 	<!-- Locale/language configuration -->

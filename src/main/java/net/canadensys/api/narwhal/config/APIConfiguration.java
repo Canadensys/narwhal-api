@@ -8,6 +8,7 @@ package net.canadensys.api.narwhal.config;
  */
 public class APIConfiguration {
 		
+	private String currentVersion;
 	private String googleAnalyticsSiteVerification;
 	private String googleAnalyticsAccount;
 	
@@ -25,5 +26,12 @@ public class APIConfiguration {
 	public void setGoogleAnalyticsSiteVerification(
 			String googleAnalyticsSiteVerification) {
 		this.googleAnalyticsSiteVerification = googleAnalyticsSiteVerification;
+	}
+	
+	public String getCurrentVersion() {
+		return currentVersion;
+	}
+	public void setCurrentVersion(String currentVersion) {
+		this.currentVersion = currentVersion;
 	}
 }
