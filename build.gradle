@@ -1,38 +1,26 @@
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'eclipse'
-apply plugin: org.gradle.api.plugins.tomcat.TomcatPlugin
+
+ext {
+    tomcatContextPath = 'tools'
+}
+apply from: "https://raw.githubusercontent.com/Canadensys/canadensys-common/master/gradle/canadensys_web_build_21.gradle"
+apply from: "http://dl.bintray.com/scalding/generic/waroverlay.gradle"
 
 //Make sure tomcat will run with the right encoding
 System.setProperty('file.encoding', 'UTF-8')
 
-repositories {
-	maven {url 'http://download.osgeo.org/webdav/geotools'}
-	maven {url 'http://download.java.net/maven/2'}
-
-	mavenCentral()
-	mavenLocal()
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:1.2.4'
-    }
-}
-
 ext {
 	sourceEncoding = 'UTF-8'
 
-	springVersion = '4.0.9.RELEASE'
+	springVersion = '4.1.9.RELEASE'
 	jacksonVersion = '2.2.3'
 	geotoolsVersion = '10.8'
-	tomcatVersion = '6.0.29'
+	tomcatVersion = '7.0.59'
 	seleniumVersion = '2.44.0'
+
+	servletVersion = '3.1.0'
 }
 
 compileJava.options.encoding = sourceEncoding
@@ -46,9 +34,18 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }
 
+repositories {
+
+    maven {url "http://download.osgeo.org/webdav/geotools"}
+    maven {url 'http://download.java.net/maven/2'}
+
+    mavenCentral()
+    mavenLocal()
+}
+
 dependencies {
-	providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
-	providedCompile group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.2.1'
+	providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: servletVersion
+	//providedCompile group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.2.1'
 	
 	compile group: 'org.geotools', name: 'gt-geojson', version: geotoolsVersion
 	compile group: 'org.geotools', name: 'gt-xml', version: geotoolsVersion
@@ -75,10 +72,10 @@ dependencies {
 	testCompile group: 'org.seleniumhq.selenium', name :'selenium-java',version:seleniumVersion
 	testCompile group: 'org.seleniumhq.selenium', name :'selenium-firefox-driver',version:seleniumVersion
 	testCompile group: 'org.seleniumhq.selenium', name :'selenium-htmlunit-driver',version:seleniumVersion
-    
-	tomcat("org.apache.tomcat:catalina:${tomcatVersion}")
-	tomcat("org.apache.tomcat:coyote:${tomcatVersion}")
-	tomcat("org.apache.tomcat:jasper:${tomcatVersion}")
+
+    tomcat("org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}")
+    tomcat("org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}")
+    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}")
  }
 
 //WAR plugin settings
@@ -93,28 +90,14 @@ test {
     exclude '**/*IntegrationTest.*'
 }
 
+//Tomcat plugin settings
 tomcatRunWar {
-    httpPort = 9966
-    contextPath = 'tools'
-    stopKey = 'stopKey' 
+    httpPort = tomcatHttpPort
+    contextPath = tomcatContextPath
+    stopKey = 'stopKey'
+    outputFile = file('tomcat.log')
 }
 
-tomcatStop {
-	stopKey = 'stopKey'
-}
-
-task integrationTest(type: Test) {
-    include '**/*IntegrationTest.*'
-	
-    doFirst {
-        tomcatRunWar.daemon = true
-        tomcatRunWar.execute()
-    }
-
-    doLast {
-        tomcatStop.execute()
-    }
-}
 
 //we use local config file for these tasks
 onlyFor(integrationTest) {
@@ -122,7 +105,7 @@ onlyFor(integrationTest) {
 }
 onlyFor(tomcatRunWar) {
 	war.webInf { from "config/local" }
-} 
+}
 
 task concatProperties << {
 	ant.concat(
