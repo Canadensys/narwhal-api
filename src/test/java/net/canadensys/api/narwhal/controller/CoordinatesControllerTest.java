@@ -144,7 +144,8 @@ public class CoordinatesControllerTest {
         //test full XML content
         String expectedGMLContent = FileUtils.readFileToString(EXPECTED_GML_FILE,Charset.forName("UTF-8"));
         this.mockMvc.perform(get("/coordinates.xml").param("data","1\t45.5° N, 129.6° W"))
-        	.andExpect(content().string(equalToIgnoringWhiteSpace(expectedGMLContent)));
+        	.andExpect(content().xml(expectedGMLContent));
+
     }
     
     @Test
