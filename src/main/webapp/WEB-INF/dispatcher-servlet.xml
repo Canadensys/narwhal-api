@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:p="http://www.springframework.org/schema/p"
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
     xsi:schemaLocation="
@@ -18,19 +17,38 @@
     
     <mvc:interceptors>
 		<!-- Changes the locale when a 'lang' request parameter is sent; e.g. /?lang=fr -->
-		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-	    		<property name="paramName" value="lang"></property>
+		<bean class="net.canadensys.web.i18n.SupportedLocaleChangeInterceptor">
+			<property name="paramName" value="lang"/>
+			<property name="defaultLocale" value="en"/>
+			<property name="supportedLocale">
+				<list>
+					<value>en</value>
+					<value>fr</value>
+					<!--<value>es</value>-->
+				</list>
+			</property>
 		</bean>
 	</mvc:interceptors>
-    
-    <mvc:resources mapping="/js/**" location="/js/" />
-	<mvc:resources mapping="/styles/**" location="/styles/" />
-	<mvc:resources mapping="/error.html" location="/error.html" />
-    
-    <bean id="messageSource"
-	    class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-	    <property name="basename" value="classpath:messages" />
-	    <property name="defaultEncoding" value="UTF-8"/>
+
+	<!-- Locale/language configuration -->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<property name="defaultLocale" value="en" />
+	</bean>
+
+    <!-- Handles GET requests for static content -->
+    <mvc:resources mapping="/assets/styles/**" location="/styles/" />
+    <mvc:resources mapping="/static/**" location="/static/" />
+
+	<bean id="messageSource"
+		  class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>classpath:theme_messages</value>
+				<value>classpath:messages</value>
+			</list>
+		</property>
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="fallbackToSystemLocale" value="false" />
 	</bean>
 	
 	<!-- Application configuration -->
@@ -46,35 +64,66 @@
 	<bean id="appConfig" class="net.canadensys.api.narwhal.config.APIConfiguration">
 		<property name="currentVersion" value="${version.current:}" />
 	</bean>
-    
-	<!-- Locale/language configuration -->
-	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
-		<property name="defaultLocale" value="en" />
-	</bean>
-	
-	<!-- Wrap the URLHelper -->
+
 	<bean id="freemarkerDefaultBeansWrapper" class="freemarker.ext.beans.BeansWrapper"
 		factory-method="getDefaultInstance"/>
 	<bean id="freemarkerStaticModels" factory-bean="freemarkerDefaultBeansWrapper"
 		factory-method="getStaticModels"/>
 
 	<bean id="URLHelper" factory-bean="freemarkerStaticModels" factory-method="get">
-          <constructor-arg value="net.canadensys.web.FreemarkerURLHelper"/>
+          <constructor-arg value="net.canadensys.web.freemarker.FreemarkerURLHelper"/>
  	</bean>
+
+    <!-- Freemarker servlet for decorators -->
+    <bean id="springFreemarkerDecoratorServlet"
+          class="net.canadensys.web.SpringFreemarkerDecoratorServlet">
+        <property name="servletName">
+            <value>freemarker-decorator</value>
+        </property>
+        <property name="initParameters">
+            <props>
+                <prop key="TemplatePath">/decorators,/WEB-INF/view/inc</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Map decorators URL to our decorators Servlet -->
+    <bean id="urlMapping"
+          class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/decorators/*" value-ref="springFreemarkerDecoratorServlet"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- This HandlerAdapter allows to run a servlet as handler -->
+    <bean id="simpleServletHandlerAdapter" class="org.springframework.web.servlet.handler.SimpleServletHandlerAdapter"/>
 		
 	<!-- Freemarker config -->
 	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-  		<property name="templateLoaderPath" value="/WEB-INF/view/"/>
+        <property name="templateLoaderPaths">
+            <list>
+                <value>/WEB-INF/view/</value>
+            </list>
+        </property>
   		<property name="freemarkerVariables">
         <map>
-          <entry key="gaSiteVerification" value="${googleanalytics.siteVerification:}"/>
-          <entry key="gaAccount" value="${googleanalytics.account:}"/>
+			<entry key="currentVersion" value="${version.current:}" />
+			<entry>
+				<key>
+					<value>useMinified</value>
+				</key>
+				<value type="java.lang.Boolean">${url.useMinified}</value>
+			</entry>
           <entry key="URLHelper" value-ref="URLHelper"/>
         </map>
 		</property>
-		<property name="freemarkerSettings"> 
-			<props> 
-				<prop key="template_exception_handler">ignore</prop>
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="number_format">computer</prop>
+				<prop key="url_escaping_charset">UTF-8</prop>
+				<prop key="template_exception_handler">rethrow</prop>
 			</props>
 		</property>
 	</bean>
@@ -111,15 +160,15 @@
 	  </property>
 	  <property name="ignoreAcceptHeader" value="true" />
 	</bean>
-	
-	<bean id="freeMarkerViewResolver" 
-		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-		<property name="order" value="2" />
-		<property name="cache" value="true"/>
-		<property name="prefix" value=""/>
-		<property name="suffix" value=".ftl"/>
-		<property name="contentType" value="text/html;charset=UTF-8"/>
-		<property name="requestContextAttribute" value="rc"/>
+
+	<bean id="freeMarkerViewResolver"
+		  class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<!--<property name="order" value="2" />-->
+		<property name="cache" value="true" />
+		<property name="prefix" value="" />
+		<property name="suffix" value=".ftl" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+		<property name="requestContextAttribute" value="rc" />
 	</bean>
 
 </beans>

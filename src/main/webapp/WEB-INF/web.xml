@@ -46,4 +46,32 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 		<exception-type>java.lang.Exception</exception-type>
 		<location>/error.html</location>
 	</error-page>
+
+	<filter>
+		<filter-name>sitemesh</filter-name>
+		<filter-class>org.sitemesh.config.ConfigurableSiteMeshFilter</filter-class>
+		<init-param>
+			<param-name>includeErrorPages</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>sitemesh</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>ERROR</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+
+	<!-- Security constraints work only on the original request URI and not
+		on calls made through a RequestDispatcher -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Prevent direct access to decorators template</web-resource-name>
+			<url-pattern>*.ftl</url-pattern>
+		</web-resource-collection>
+		<auth-constraint />
+	</security-constraint>
 </web-app>
