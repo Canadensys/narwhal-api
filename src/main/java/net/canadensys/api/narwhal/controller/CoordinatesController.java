@@ -3,11 +3,14 @@ package net.canadensys.api.narwhal.controller;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.canadensys.api.narwhal.config.NarwhalConfiguration;
 import net.canadensys.api.narwhal.geotools.GMLWriter;
 import net.canadensys.api.narwhal.geotools.GeoToolsModelBuilder;
 import net.canadensys.api.narwhal.model.CoordinateAPIResponse;
@@ -83,6 +86,8 @@ public class CoordinatesController {
 	@RequestMapping(value={"/coordinates"}, method={RequestMethod.GET,RequestMethod.POST})
 	public String handleCoordinatesHtml(@RequestParam(required=false) String data, @RequestParam(required=false) Boolean idprovided, ModelMap model,
 			HttpServletRequest request){
+
+		model.addAttribute(NarwhalConfiguration.PAGE_ROOT_MODEL_KEY, ControllerHelper.createPageModel(request));
 		
 		if(StringUtils.isBlank(data)){
 			return "coordinates";
@@ -135,9 +140,9 @@ public class CoordinatesController {
 		
 		//make sure the answer is set as UTF-8
 		response.setCharacterEncoding("UTF-8");
-		response.setContentType(APIControllerHelper.JSONP_CONTENT_TYPE);
+		response.setContentType(ControllerHelper.JSONP_CONTENT_TYPE);
 				
-		if(APIControllerHelper.JSONP_ACCEPTED_CHAR_PATTERN.matcher(callback).matches()){
+		if(ControllerHelper.JSONP_ACCEPTED_CHAR_PATTERN.matcher(callback).matches()){
 
 			CoordinateAPIResponse apiResponse = generateCoordinateAPIResponse(data,idprovided);
 			StringWriter sw = new StringWriter();
@@ -207,16 +212,16 @@ public class CoordinatesController {
 		
 		//check if we have a hint about the id column
 		if(BooleanUtils.isTrue(idprovided)){
-			APIControllerHelper.splitIdAndData(data, dataList, idList);
+			ControllerHelper.splitIdAndData(data, dataList, idList);
 			return apiService.processCoordinates(dataList, idList);
 		}
 		else if(BooleanUtils.isFalse(idprovided)){
-			APIControllerHelper.splitData(data, dataList);
+			ControllerHelper.splitData(data, dataList);
 			return apiService.processCoordinates(dataList);
 		}
 		else{ //idprovided == null, we need to guess
 			List<String> fallbackList = new ArrayList<String>();
-			APIControllerHelper.splitIdAndData(data, dataList, idList,fallbackList);
+			ControllerHelper.splitIdAndData(data, dataList, idList,fallbackList);
 			return apiService.processCoordinates(dataList, idList,fallbackList);
 		}
 	}

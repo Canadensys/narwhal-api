@@ -61,8 +61,11 @@
 		</property>
 	</bean>
 	
-	<bean id="appConfig" class="net.canadensys.api.narwhal.config.APIConfiguration">
+	<bean id="appConfig" class="net.canadensys.api.narwhal.config.NarwhalConfiguration">
 		<property name="currentVersion" value="${version.current:}" />
+        <property name="googleAnalyticsSiteVerification" value="${googleanalytics.siteVerification:}" />
+        <property name="googleAnalyticsAccount" value="${googleanalytics.account:}" />
+        <property name="feedbackURL" value="${feedback.url:}" />
 	</bean>
 
 	<bean id="freemarkerDefaultBeansWrapper" class="freemarker.ext.beans.BeansWrapper"

@@ -1,7 +1,10 @@
-<#assign page={"title":rc.getMessage("tools.dates.heading"),"cssList":["styles/tools.css"]}>
-<#include "inc/header.ftl">
-<div id="feedback_bar"><a href="https://github.com/Canadensys/narwhal-api/issues/new" target="_blank" title="${rc.getMessage("tools.common.feedback.hover")}">&nbsp;</a></div>
-<#include "inc/canadensys-header.ftl">
+<#include "inc/global-functions.ftl">
+
+<head>
+<title>${rc.getMessage("tools.dates.heading")}</title>
+<@cssAsset fileName="tools" version=currentVersion! useMinified=false/>
+</head>
+
 <div id="body" class="fullscreen full_height">
 	<div id="side_bar">
 		<#include "inc/sidebar-list.ftl">
@@ -29,4 +32,3 @@
 		</form>
 	</div>
 </div>
-<#include "inc/footer.ftl">

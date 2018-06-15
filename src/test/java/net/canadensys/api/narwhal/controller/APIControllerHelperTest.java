@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 /**
- * Tests related to the APIControllerHelper
+ * Tests related to the ControllerHelper
  * @author canadensys
  *
  */
@@ -24,7 +24,7 @@ public class APIControllerHelperTest {
 		List<String> dataList = new ArrayList<String>();
 		List<String> idList = new ArrayList<String>();
 
-		APIControllerHelper.splitIdAndData(data, dataList, idList);
+		ControllerHelper.splitIdAndData(data, dataList, idList);
 		assertEquals(dataList.size(), idList.size());
 		assertEquals("2010-08-02",dataList.get(1));
 		assertNull(idList.get(1));
@@ -41,7 +41,7 @@ public class APIControllerHelperTest {
 		List<String> idList = new ArrayList<String>();
 		List<String> fallbackList = new ArrayList<String>();
 
-		APIControllerHelper.splitIdAndData(data, dataList, idList);
+		ControllerHelper.splitIdAndData(data, dataList, idList);
 		assertEquals(dataList.size(), idList.size());
 		assertEquals("2:3:4N\t5:6:7W",dataList.get(0));
 		
@@ -49,7 +49,7 @@ public class APIControllerHelperTest {
 		data = "2:3:4N\t5:6:7W";
 		dataList.clear();
 		idList.clear();
-		APIControllerHelper.splitIdAndData(data, dataList, idList, fallbackList);
+		ControllerHelper.splitIdAndData(data, dataList, idList, fallbackList);
 		//Validate that 2:3:4N is used as an id (I know it doesn't make sense but that's the expected behavior, the caller will use the fallbackList since he is the only one that knows it doesn't make sense)
 		assertEquals("2:3:4N",idList.get(0));
 		assertEquals("5:6:7W",dataList.get(0));
@@ -68,7 +68,7 @@ public class APIControllerHelperTest {
 		List<String> dataList = new ArrayList<String>();
 		List<String> idList = new ArrayList<String>();
 
-		APIControllerHelper.splitIdAndData(data, dataList, idList);
+		ControllerHelper.splitIdAndData(data, dataList, idList);
 		assertEquals(dataList.size(), idList.size());
 		assertEquals("2010-08-02",dataList.get(1));
 		assertEquals("2",idList.get(1));
@@ -84,7 +84,7 @@ public class APIControllerHelperTest {
 		List<String> dataList = new ArrayList<String>();
 		List<String> idList = new ArrayList<String>();
 
-		APIControllerHelper.splitIdAndData(data, dataList, idList);
+		ControllerHelper.splitIdAndData(data, dataList, idList);
 		assertEquals(dataList.size(), idList.size());
 		assertEquals("2010-08-02",dataList.get(1));
 		assertEquals("1",idList.get(0));
@@ -101,7 +101,7 @@ public class APIControllerHelperTest {
 		List<String> dataList = new ArrayList<String>();
 		List<String> idList = new ArrayList<String>();
 
-		APIControllerHelper.splitIdAndData(data, dataList, idList);
+		ControllerHelper.splitIdAndData(data, dataList, idList);
 		assertEquals(dataList.size(), idList.size());
 		assertEquals(1,dataList.size());
 	}

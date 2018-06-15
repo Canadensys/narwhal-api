@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.canadensys.api.narwhal.config.NarwhalConfiguration;
 import net.canadensys.api.narwhal.model.DateAPIResponse;
 import net.canadensys.api.narwhal.service.APIService;
 
@@ -62,16 +63,16 @@ public class DateController {
 		
 		//make sure the answer is set as UTF-8
 		response.setCharacterEncoding("UTF-8");
-		response.setContentType(APIControllerHelper.JSONP_CONTENT_TYPE);
+		response.setContentType(ControllerHelper.JSONP_CONTENT_TYPE);
 		
-		if(APIControllerHelper.JSONP_ACCEPTED_CHAR_PATTERN.matcher(callback).matches()){
+		if(ControllerHelper.JSONP_ACCEPTED_CHAR_PATTERN.matcher(callback).matches()){
 			//JSONP handling
 			String json = "";
 			DateAPIResponse apiResponse = null;
 			List<String> dataList = new ArrayList<String>();
 			List<String> idList = new ArrayList<String>();
 
-			APIControllerHelper.splitIdAndData(data, dataList, idList);
+			ControllerHelper.splitIdAndData(data, dataList, idList);
 			apiResponse = apiService.processDates(dataList, idList);
 			
 			try {
@@ -98,15 +99,21 @@ public class DateController {
 	/**
 	 * Handle dates parsing for all requests (except JSONP)
 	 * @param data
-	 * @param callback
 	 * @param model
+	 * @param request
 	 * @param response
 	 * @return view name
 	 */
 	@RequestMapping(value={"/dates"}, method={RequestMethod.GET,RequestMethod.POST}, params="!callback")
 	public String handleDatesParsing(@RequestParam(required=false) String data,
 			ModelMap model, HttpServletRequest request, HttpServletResponse response){
-		
+
+		// only include the page model for freemarker
+		if(!StringUtils.endsWith(request.getRequestURI(), ".json") &&
+				!StringUtils.endsWith(request.getRequestURI(), ".xml")) {
+			model.addAttribute(NarwhalConfiguration.PAGE_ROOT_MODEL_KEY, ControllerHelper.createPageModel(request));
+		}
+
 		if(StringUtils.isBlank(data)){
 			return "dates";
 		}
@@ -115,13 +122,13 @@ public class DateController {
 		
 		response.setCharacterEncoding("UTF-8");
 
-		List<String> dataList = new ArrayList<String>();
-		List<String> idList = new ArrayList<String>();
+		List<String> dataList = new ArrayList<>();
+		List<String> idList = new ArrayList<>();
 		
-		APIControllerHelper.splitIdAndData(data, dataList, idList);
+		ControllerHelper.splitIdAndData(data, dataList, idList);
 		
 		apiResponse = apiService.processDates(dataList, idList);
-		apiResponse.setIdProvided(APIControllerHelper.containsAtLeastOneNonBlank(idList));
+		apiResponse.setIdProvided(ControllerHelper.containsAtLeastOneNonBlank(idList));
 		
 		LOGGER.info("Date|{}|{}|{}", request.getMethod(), request.getRequestURI(), request.getRemoteAddr());
 		model.addAttribute("data", apiResponse);

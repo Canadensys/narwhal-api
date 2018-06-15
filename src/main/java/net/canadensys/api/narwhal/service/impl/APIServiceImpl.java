@@ -20,7 +20,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service("apiService")
-public class APIServiceImpl implements APIService{
+public class APIServiceImpl implements APIService {
+
 	//Create processors
 	private CoordinatePairProcessor coordinatePairProcessor = new CoordinatePairProcessor();
 	private DegreeMinuteToDecimalProcessor degreeMinuteToDecimalProcessor = new DegreeMinuteToDecimalProcessor();

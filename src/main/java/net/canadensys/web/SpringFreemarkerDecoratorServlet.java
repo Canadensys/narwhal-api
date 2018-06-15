@@ -9,7 +9,7 @@ import java.util.Properties;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
-import net.canadensys.api.narwhal.config.APIConfiguration;
+import net.canadensys.api.narwhal.config.NarwhalConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -38,7 +38,7 @@ public class SpringFreemarkerDecoratorServlet extends FreemarkerServlet implemen
     private Properties initParameters = new Properties();
 
     @Autowired
-    private APIConfiguration apiConfig;
+    private NarwhalConfiguration apiConfig;
 
     //Servlet context from Spring
     @Autowired
@@ -102,9 +102,9 @@ public class SpringFreemarkerDecoratorServlet extends FreemarkerServlet implemen
             cfg.setSharedVariable("gaSiteVerification", apiConfig.getGoogleAnalyticsSiteVerification());
             cfg.setSharedVariable("gaAccount", apiConfig.getGoogleAnalyticsAccount());
 
-//            if(StringUtils.isNotBlank(vascanConfig.getFeedbackURL())){
-//                cfg.setSharedVariable("feedbackURL", vascanConfig.getFeedbackURL());
-//            }
+            if(StringUtils.isNotBlank(apiConfig.getFeedbackURL())){
+                cfg.setSharedVariable("feedbackURL", apiConfig.getFeedbackURL());
+            }
         }
         catch (TemplateModelException e) {
             e.printStackTrace();

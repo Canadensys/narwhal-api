@@ -1,9 +1,18 @@
 package net.canadensys.api.narwhal.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
+import net.canadensys.api.narwhal.config.NarwhalConfiguration;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.servlet.support.RequestContextUtils;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Candidate for future canadensys-web-core library
@@ -11,15 +20,56 @@ import org.apache.commons.lang3.StringUtils;
  * @author canadensys
  *
  */
-public class APIControllerHelper {
+class ControllerHelper {
 	
-	public static final Pattern JSONP_ACCEPTED_CHAR_PATTERN = Pattern.compile("[\\w\\.]+");
-	public static final String JSONP_CONTENT_TYPE = "application/x-javascript";
+	static final Pattern JSONP_ACCEPTED_CHAR_PATTERN = Pattern.compile("[\\w\\.]+");
+	static final String JSONP_CONTENT_TYPE = "application/x-javascript";
 	
 	//separator used for lines
-	public static final String LINE_SEPARATOR = "[\r\n]+";
+	static final String LINE_SEPARATOR = "[\r\n]+";
 	//optional separator used between id and data
-	public static final String DATA_SEPARATOR = "[\t|]+";
+	static final String DATA_SEPARATOR = "[\t|]+";
+
+	/**
+	 * No constructor, utility class
+	 */
+	private ControllerHelper() {}
+
+	static Map<String,Object> createPageModel(HttpServletRequest request) {
+		Map<String,Object> pageModel = new HashMap<>();
+		addLanguagesUrl(request, pageModel);
+		return pageModel;
+	}
+
+	/**
+	 * Add to the provided model a map including the URL to the provided resource in the other
+	 * available language(s).
+	 *
+	 * @param request
+	 * @param model
+	 */
+	static void addLanguagesUrl(HttpServletRequest request, Map<String,Object> model){
+		Locale locale = RequestContextUtils.getLocale(request);
+		String currLanguage = locale.getLanguage();
+		// add current language
+		model.put("language", currLanguage);
+		model.put("languageUrl", buildLanguageUri(request, currLanguage));
+
+		// add other language(s)
+		Map<String,String> languagePathMap = new HashMap<>();
+		for(String currSupportedLang : NarwhalConfiguration.SUPPORTED_LANGUAGES){
+			if(!currSupportedLang.equalsIgnoreCase(currLanguage)){
+				languagePathMap.put(currSupportedLang, buildLanguageUri(request, currSupportedLang));
+			}
+		}
+		model.put("otherLanguage", languagePathMap);
+	}
+
+	private static String buildLanguageUri(HttpServletRequest request, String lang){
+		UriComponentsBuilder bldr = ServletUriComponentsBuilder.fromRequest(request);
+		bldr.replaceQueryParam(NarwhalConfiguration.LANG_PARAM, lang);
+		return bldr.build().toUriString();
+	}
 	
 	/**
 	 * splitIdAndData without fallback list if the provided data can NOT use a DATA_SEPARATOR inside the data part or a id column id used. 
@@ -37,7 +87,7 @@ public class APIControllerHelper {
 	 * @param dataList
 	 */
 	public static void splitData(String data, List<String> dataList){
-		String[] lines = data.split(APIControllerHelper.LINE_SEPARATOR);
+		String[] lines = data.split(ControllerHelper.LINE_SEPARATOR);
 		for(String currLine : lines){
 			dataList.add(currLine);
 		}
@@ -53,7 +103,7 @@ public class APIControllerHelper {
 	 * no id was provided. In that case, a part of the data could have been mistakenly split as an id. It is the responsibility of the caller to determine what to do with the split data.
 	 */
 	public static void splitIdAndData(String data, List<String> dataList, List<String> idList, List<String> fallbackList){
-		String[] lines = data.split(APIControllerHelper.LINE_SEPARATOR);
+		String[] lines = data.split(ControllerHelper.LINE_SEPARATOR);
 		
 		for(String currLine : lines){
 			String[] dataParts = currLine.split(DATA_SEPARATOR,2);
