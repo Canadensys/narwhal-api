@@ -44,7 +44,7 @@ task wrapper(type: Wrapper) {
 repositories {
 
     maven {url "http://download.osgeo.org/webdav/geotools"}
-    maven {url 'http://download.java.net/maven/2'}
+    maven {url "http://download.java.net/maven/2"}
 
 	// switch back to mavenCentral() when on Java 8
 	maven { url "http://repo.maven.apache.org/maven2" }
