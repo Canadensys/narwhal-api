@@ -126,7 +126,6 @@ tomcatRunWar {
     outputFile = file('tomcat.log')
 }
 
-
 //we use local config file for these tasks
 onlyFor(integrationTest) {
 	war.webInf { from "config/local" }
@@ -134,28 +133,6 @@ onlyFor(integrationTest) {
 onlyFor(tomcatRunWar) {
 	war.webInf { from "config/local" }
 }
-
-task concatProperties << {
-	ant.concat(
-		append : "yes",
-		encoding : "UTF-8",
-		outputencoding : "UTF-8",
-		destfile:"${sourceSets.main.output.resourcesDir}/messages_en.properties") {
-			fileset(dir:'../canadensys-view-includes/resources/',includes:'messages_en.properties')
-	}
-	
-	ant.concat(
-		append : "yes",
-		encoding : "UTF-8",
-		outputencoding : "UTF-8",
-		destfile:"${sourceSets.main.output.resourcesDir}/messages_fr.properties") {
-			fileset(dir:'../canadensys-view-includes/resources/',includes:'messages_fr.properties')
-	}
-}
-//Do concatProperties before WAR
-war.dependsOn concatProperties
-//Do war before integrationTest since we use tomcatRunWar
-integrationTest.dependsOn war
 
 def onlyFor(task, config) {
     gradle.taskGraph.whenReady { graph ->
