@@ -6,7 +6,12 @@ API for the narwhal-processor
 
 # Run Locally
 ```
-./gradlew –daemon clean runLocal
+./gradlew -daemon clean runLocal
+```
+
+# Run Tests
+```
+./gradlew clean test
 ```
 
 Dependencies
