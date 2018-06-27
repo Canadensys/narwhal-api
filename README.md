@@ -3,6 +3,9 @@ narwhal-api
 
 API for the narwhal-processor
 
+# Build Status
+
+[![Build Status](https://travis-ci.org/Canadensys/narwhal-api.png)](https://travis-ci.org/Canadensys/narwhal-api)
 
 # Run Locally
 ```
