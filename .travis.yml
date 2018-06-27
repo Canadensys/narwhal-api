@@ -1,5 +1,5 @@
 language: java
-
+install: ./gradlew clean test
 before_install:
  - cd ..
  - git clone https://github.com/Canadensys/narwhal-processor.git
