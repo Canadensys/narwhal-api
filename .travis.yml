@@ -1,5 +1,4 @@
 language: java
-install: ./gradlew clean test
 before_install:
  - cd ..
  - git clone https://github.com/Canadensys/narwhal-processor.git
@@ -7,6 +6,7 @@ before_install:
  - git fetch --tags
  - git checkout tags/1.5.2
  - mvn -Dhttps.protocols=TLSv1.2 clean install
+ - cd $TRAVIS_BUILD_DIR
 
 # jdk7 requires Precise, see https://github.com/travis-ci/travis-ci/issues/8503
 matrix:
